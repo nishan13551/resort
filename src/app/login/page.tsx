@@ -109,14 +109,6 @@ export default function LoginPage() {
             </Button>
           </form>
         </div>
-
-        <div className="mt-6 rounded-2xl bg-white/10 p-4 text-center text-xs text-emerald-50 backdrop-blur animate-fade-up animate-delay-2">
-          <p className="font-semibold">{t('login.demo')}</p>
-          <p className="mt-1.5 space-y-1">
-            <span className="block">{t('login.adminHint')}</span>
-            <span className="block text-emerald-200">{t('login.caretakerHint')}</span>
-          </p>
-        </div>
       </div>
     </div>
   );
