@@ -239,6 +239,7 @@ const bn: Dict = {
   // Check-out
   'co.currentlyCheckedIn': 'বর্তমানে চেক-ইন করা অতিথিরা',
   'co.activeGuests': 'সক্রিয় অতিথিরা',
+  'co.formIntro': 'অতিথির তথ্য প্রবেশ করিয়ে চেক-আউট সম্পন্ন করুন',
   'co.noGuests': 'চেক-আউটের জন্য কোনো অতিথি নেই',
   'co.todayTag': 'আজ',
   'co.button': 'চেক-আউট',
@@ -608,6 +609,7 @@ const en: Dict = {
 
   'co.currentlyCheckedIn': 'Currently Checked-In Guests',
   'co.activeGuests': 'Active Guests',
+  'co.formIntro': 'Enter guest details to complete the check-out',
   'co.noGuests': 'No guests available for check-out',
   'co.todayTag': 'Today',
   'co.button': 'Check-Out',

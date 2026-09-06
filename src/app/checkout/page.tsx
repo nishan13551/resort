@@ -131,6 +131,12 @@ function CaretakerCheckout() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ReceiptText className="h-5 w-5 text-amber-600" />
+            {t('co.formIntro')}
+          </CardTitle>
+        </CardHeader>
         <CardContent className="p-4 sm:p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <FormGroup>
@@ -531,11 +537,15 @@ function AdminCheckoutList() {
 
 function CheckoutPageContent() {
   const { currentUser } = useAuth();
+  const isCaretaker = currentUser?.role === 'caretaker';
 
   return (
     <RequireAuth>
       <DashboardLayout>
-        {currentUser?.role === 'caretaker' ? <CaretakerCheckout /> : <AdminCheckoutList />}
+        <div className="space-y-6">
+          <CaretakerCheckout />
+          {!isCaretaker && <AdminCheckoutList />}
+        </div>
       </DashboardLayout>
     </RequireAuth>
   );
