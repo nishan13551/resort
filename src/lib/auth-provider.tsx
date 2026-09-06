@@ -23,7 +23,7 @@ const SESSION_KEY = 'dhansiri_session';
 
 // Password store (demo only - will be replaced by Supabase Auth)
 const DEMO_PASSWORDS: Record<string, string> = {
-  'admin@dhansiri.com': 'admin123',
+  'admin@dhansiri.com': 'admin098',
   'caretaker@dhansiri.com': 'caretaker123',
 };
 

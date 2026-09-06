@@ -5,8 +5,7 @@ Built with Next.js 16 (App Router), Tailwind CSS, and Supabase (Postgres + Realt
 
 ## Features
 
-- Two roles: **Admin** (Rasel) and **Caretaker**
-  - Logins: `admin@dhansiri.com` / `admin123` and `caretaker@dhansiri.com` / `caretaker123`
+- Two roles: **Admin** (Rasel) and **Caretaker**; accounts are seeded by the admin
 - Rooms, bookings, check-in/check-out, payments, history, calendar and reports
 - Rocket billing rates: বিডব্লিউডিবি ৳70, অন্যান্য সরকারি অফিস ৳280, এনজিও / সাধারণ ৳600 (per day)
 - Full Bangla + English i18n with language toggle
