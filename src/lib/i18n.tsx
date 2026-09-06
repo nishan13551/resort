@@ -754,6 +754,7 @@ export interface LangContextValue {
   toggleLang: () => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
   fmtDate: (dateStr: string) => string;
+  fmtDateTime: (dateStr: string) => string;
   fmtCurrency: (amount: number) => string;
 }
 
@@ -764,14 +765,37 @@ function replaceVars(text: string, vars?: Record<string, string | number>): stri
   return text.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? String(vars[k]) : `{${k}}`));
 }
 
-const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
-const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const BD_TIMEZONE = 'Asia/Dhaka';
+
+export const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+export const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export function dateFormat(dateStr: string, lang: Lang): string {
   if (!dateStr) return '';
   const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: BD_TIMEZONE, year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(d);
+  const part = (type: string) => Number(parts.find(p => p.type === type)?.value ?? 0);
   const months = lang === 'bn' ? BN_MONTHS : EN_MONTHS;
-  return `${d.getDate()} ${months[d.getMonth()]}, ${d.getFullYear()}`;
+  return `${part('day')} ${months[part('month') - 1]}, ${part('year')}`;
+}
+
+export function dateTimeFormat(dateStr: string, lang: Lang): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: BD_TIMEZONE,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).formatToParts(d);
+  const part = (type: string) => parts.find(p => p.type === type)?.value ?? '';
+  const months = lang === 'bn' ? BN_MONTHS : EN_MONTHS;
+  return `${part('day')} ${months[Number(part('month')) - 1]}, ${part('year')}, ${String(part('hour')).padStart(2, '0')}:${part('minute')} ${part('dayPeriod')}`;
 }
 
 export function currencyFormat(amount: number, lang: Lang): string {
@@ -821,10 +845,11 @@ export function LangProvider({ children }: { children: ReactNode }) {
   );
 
   const fmtDate = useCallback((dateStr: string) => dateFormat(dateStr, lang), [lang]);
+  const fmtDateTime = useCallback((dateStr: string) => dateTimeFormat(dateStr, lang), [lang]);
   const fmtCurrency = useCallback((amount: number) => currencyFormat(amount, lang), [lang]);
 
   return (
-    <LangContext.Provider value={{ lang, setLang, toggleLang, t, fmtDate, fmtCurrency }}>
+    <LangContext.Provider value={{ lang, setLang, toggleLang, t, fmtDate, fmtDateTime, fmtCurrency }}>
       {children}
     </LangContext.Provider>
   );

@@ -31,7 +31,7 @@ export default function UsersPage() {
   const { currentUser, users, addUser, updateUser } = useAuth();
   const { bookings } = useData();
   const { showToast } = useToast();
-  const { t, lang } = useLang();
+  const { t, lang, fmtDateTime } = useLang();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -143,7 +143,7 @@ export default function UsersPage() {
 
                     <div className="mt-3 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
                       <span>{t('user.bookingsCreated', { n: bookingCount })}</span>
-                      <span>{t('user.addedDate')} {new Date(user.created_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-IN')}</span>
+                      <span>{t('user.addedDate')} {fmtDateTime(user.created_at)}</span>
                     </div>
 
                     <div className="mt-3 flex justify-end gap-1">

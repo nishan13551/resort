@@ -22,7 +22,7 @@ import { useData } from '@/lib/data-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input, FormLabel, FormGroup } from '@/components/ui/form';
 import { Badge } from '@/components/ui/badge';
-import { useLang, guestTypeLabel, paymentStatusLabel } from '@/lib/i18n';
+import { useLang, guestTypeLabel, paymentStatusLabel, BN_MONTHS, EN_MONTHS } from '@/lib/i18n';
 import { getToday, getWeekStart, getWeekEnd, getMonthStart, getMonthEnd } from '@/lib/utils';
 
 type RangeKey = 'today' | 'week' | 'month' | 'custom';
@@ -82,16 +82,19 @@ export default function ReportsPage() {
   }, [rooms, filtered]);
 
   const monthlyRevenue = useMemo(() => {
-    const months: { key: string; label: string }[] = [];
-    const now = new Date();
+    const rows: { key: string; label: string }[] = [];
+    const bdToday = new Date(
+      new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Dhaka', year: 'numeric', month: 'numeric', day: 'numeric' }).format()
+    );
+    const months = lang === 'bn' ? BN_MONTHS : EN_MONTHS;
     for (let i = 5; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      months.push({
-        key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
-        label: d.toLocaleString(lang === 'bn' ? 'bn-BD' : 'en-US', { month: 'long' }),
+      const ym = new Date(bdToday.getFullYear(), bdToday.getMonth() - i, 1);
+      rows.push({
+        key: `${ym.getFullYear()}-${String(ym.getMonth() + 1).padStart(2, '0')}`,
+        label: months[ym.getMonth()],
       });
     }
-    return months.map(m => ({
+    return rows.map(m => ({
       name: m.label,
       revenue: bookings
         .filter(b => {
