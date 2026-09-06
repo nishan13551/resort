@@ -45,3 +45,5 @@ npm run dev
 
 Import the repo on [Vercel](https://vercel.com/new), add the same two
 `NEXT_PUBLIC_*` env vars (Production, type Config), and deploy.
+
+Production: https://resort-bice.vercel.app
