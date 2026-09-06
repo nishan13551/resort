@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ধানসিঁড়ি রেস্ট হাউজ — Dhansiri Rest House Management
 
-## Getting Started
+A mobile-first, bilingual (বাংলা / English) booking & guest management system for Dhansiri Rest House.
+Built with Next.js 16 (App Router), Tailwind CSS, and Supabase (Postgres + Realtime).
 
-First, run the development server:
+## Features
+
+- Two roles: **Admin** (Rasel) and **Caretaker**
+  - Logins: `admin@dhansiri.com` / `admin123` and `caretaker@dhansiri.com` / `caretaker123`
+- Rooms, bookings, check-in/check-out, payments, history, calendar and reports
+- Rocket billing rates: বিডব্লিউডিবি ৳70, অন্যান্য সরকারি অফিস ৳280, এনজিও / সাধারণ ৳600 (per day)
+- Full Bangla + English i18n with language toggle
+- Mobile-first bottom navigation, drawer, and dark-friendly UI
+
+## Data storage
+
+Two modes, automatic:
+
+- **Online (Supabase)** — active when `NEXT_PUBLIC_SUPABASE_URL` and
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` are present. Reads/writes through PostgREST and
+  syncs live across devices via Supabase Realtime.
+- **Local (demo)** — otherwise falls back to `localStorage` so the app always runs.
+
+## Local setup
 
 ```bash
+# 1. Install
+npm install
+
+# 2. Create the database tables (once, in Supabase SQL Editor)
+#    paste supabase/schema.sql and run it.
+
+# 3. Add your project keys (never commit .env.local)
+cp .env.example .env.local
+#    fill NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+# 4. Seed/reset data (rooms + sample bookings)
+npm run seed:supabase
+
+# 5. Run
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Import the repo on [Vercel](https://vercel.com/new), add the same two
+`NEXT_PUBLIC_*` env vars (Production, type Config), and deploy.
