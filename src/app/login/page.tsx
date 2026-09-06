@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Hotel, Eye, EyeOff, Languages } from 'lucide-react';
 import { useAuth } from '@/lib/auth-provider';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input, FormLabel, FormGroup } from '@/components/ui/form';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { currentUser, login } = useAuth();
   const { t, lang, toggleLang } = useLang();
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -17,6 +17,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      router.replace(currentUser.role === 'caretaker' ? '/bookings' : '/dashboard');
+    }
+  }, [currentUser, router]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -66,6 +72,7 @@ export default function LoginPage() {
               <FormLabel htmlFor="email">{t('user.email')}</FormLabel>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -80,6 +87,7 @@ export default function LoginPage() {
               <div className="relative">
                 <Input
                   id="password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
