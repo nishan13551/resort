@@ -160,7 +160,7 @@ const bn: Dict = {
 
   // Booking form
   'form.bookingDate': 'বুকিং তারিখ',
-  'form.guestName': 'অতিছির নাম',
+  'form.guestName': 'অতিথির নাম',
   'form.guestNameRequired': 'অতিথির নাম লিখুন',
   'form.org': 'প্রতিষ্ঠান/বিভাগ (ঐচ্ছিক)',
   'form.orgPlaceholder': 'যেমন: বিডব্লিউডিবি, এলজিইডি',
@@ -178,6 +178,8 @@ const bn: Dict = {
   'form.rentCalculation': 'ভাড়া গণনা',
   'form.dailyRate': 'দৈনিক ভাড়া',
   'form.numberOfDays': 'অবস্থানের দিন সংখ্যা',
+  'form.roomCount': 'রুম সংখ্যা',
+  'form.selectedRooms': 'নির্বাচিত রুম',
   'form.totalRent': 'মোট ভাড়া',
   'form.calculationText': '{type} × {rate}/দিন = {total}',
   'form.createBooking': 'বুকিং তৈরি করুন',
@@ -236,6 +238,7 @@ const bn: Dict = {
 
   // Check-out
   'co.currentlyCheckedIn': 'বর্তমানে চেক-ইন করা অতিথিরা',
+  'co.activeGuests': 'সক্রিয় অতিথিরা',
   'co.noGuests': 'চেক-আউটের জন্য কোনো অতিথি নেই',
   'co.todayTag': 'আজ',
   'co.button': 'চেক-আউট',
@@ -252,6 +255,7 @@ const bn: Dict = {
   'co.notPaid': 'অপরিশোধিত',
   'co.paidShort': 'পরিশোধিত',
   'co.calculation': 'দৈনিক ভাড়া × দিন',
+  'co.calcDetail': '{rate}/দিন × {days} দিন × {rooms} রুম = {total}',
   'co.checkInOn': 'চেক-ইন',
   'co.checkOutOn': 'চেক-আউট',
   'co.days': 'অবস্থানের দিন',
@@ -546,6 +550,8 @@ const en: Dict = {
   'form.rentCalculation': 'Rent Calculation',
   'form.dailyRate': 'Daily Rate',
   'form.numberOfDays': 'Number of Days',
+  'form.roomCount': 'Rooms',
+  'form.selectedRooms': 'Selected Rooms',
   'form.totalRent': 'Total Rent',
   'form.calculationText': '{type} × {rate}/day = {total}',
   'form.createBooking': 'Create Booking',
@@ -601,6 +607,7 @@ const en: Dict = {
   'ci.checkoutOn': 'Check-out:',
 
   'co.currentlyCheckedIn': 'Currently Checked-In Guests',
+  'co.activeGuests': 'Active Guests',
   'co.noGuests': 'No guests available for check-out',
   'co.todayTag': 'Today',
   'co.button': 'Check-Out',
@@ -617,6 +624,7 @@ const en: Dict = {
   'co.notPaid': 'Unpaid',
   'co.paidShort': 'Paid',
   'co.calculation': 'Daily Rate × Days',
+  'co.calcDetail': '{rate}/day × {days} days × {rooms} rooms = {total}',
   'co.checkInOn': 'Check-In',
   'co.checkOutOn': 'Check-Out',
   'co.days': 'Days',

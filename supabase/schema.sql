@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   organization TEXT NOT NULL DEFAULT '',
   guest_type TEXT NOT NULL CHECK (guest_type IN ('bwdb', 'govt_other', 'private')),
   room_id UUID NOT NULL REFERENCES rooms(id),
+  room_ids UUID[] DEFAULT ARRAY[]::UUID[],
   check_in_date DATE NOT NULL,
   check_out_date DATE NOT NULL,
   number_of_days INTEGER NOT NULL CHECK (number_of_days > 0),

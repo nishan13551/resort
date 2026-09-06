@@ -22,13 +22,13 @@ export function BookingForm() {
   const { currentUser } = useAuth();
   const { rooms, bookings, addBooking } = useData();
   const { showToast } = useToast();
-  const { t, lang, fmtDate, fmtCurrency } = useLang();
+  const { t, lang, fmtCurrency } = useLang();
 
   const [bookingDate, setBookingDate] = useState(getToday());
   const [guestName, setGuestName] = useState('');
   const [organization, setOrganization] = useState('');
   const [guestType, setGuestType] = useState<GuestType>('bwdb');
-  const [roomId, setRoomId] = useState('');
+  const [roomIds, setRoomIds] = useState<string[]>([]);
   const [checkInDate, setCheckInDate] = useState(getToday());
   const [checkOutDate, setCheckOutDate] = useState('');
   const [notes, setNotes] = useState('');
@@ -44,7 +44,8 @@ export function BookingForm() {
   }, [checkInDate, checkOutDate]);
 
   const dailyRate = getDailyRate(guestType);
-  const totalRent = calculateTotalRent(guestType, numberOfDays);
+  const roomCount = roomIds.length;
+  const totalRent = calculateTotalRent(guestType, numberOfDays) * roomCount;
 
   const unavailableRoomIds = useMemo(() => {
     if (!checkInDate || !checkOutDate) return new Set<string>();
@@ -56,10 +57,9 @@ export function BookingForm() {
     return notAvailable;
   }, [rooms, bookings, checkInDate, checkOutDate]);
 
-  const roomConflict = useMemo(() => {
-    if (!roomId || !checkInDate || !checkOutDate) return null;
-    return detectBookingConflict(bookings, roomId, checkInDate, checkOutDate);
-  }, [bookings, roomId, checkInDate, checkOutDate]);
+  function toggleRoom(id: string) {
+    setRoomIds(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
+  }
 
   function handleCheckInChange(value: string) {
     setCheckInDate(value);
@@ -79,14 +79,19 @@ export function BookingForm() {
     const validationErrors: string[] = [];
 
     if (!guestName.trim()) validationErrors.push(t('form.guestNameRequired'));
-    if (!roomId) validationErrors.push(t('form.selectRoomRequired'));
+    if (roomIds.length === 0) validationErrors.push(t('form.selectRoomRequired'));
     if (!checkInDate || !checkOutDate) validationErrors.push(t('form.datesRequired'));
     if (checkInDate && checkOutDate && new Date(checkInDate) >= new Date(checkOutDate)) {
       validationErrors.push(t('form.checkoutAfterCheckin'));
     }
     if (numberOfDays < 1) validationErrors.push(t('form.daysMin'));
-    if (roomConflict?.hasError) validationErrors.push(t('form.conflictError'));
-    if (roomId && unavailableRoomIds.has(roomId)) validationErrors.push(t('form.roomBusyNow'));
+    for (const id of roomIds) {
+      if (unavailableRoomIds.has(id)) validationErrors.push(t('form.roomBusyNow'));
+      if (detectBookingConflict(bookings, id, checkInDate, checkOutDate).hasError) {
+        validationErrors.push(t('form.conflictError'));
+        break;
+      }
+    }
 
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
@@ -94,6 +99,7 @@ export function BookingForm() {
       return;
     }
 
+    const firstRoom = rooms.find(r => r.id === roomIds[0]);
     const now = new Date().toISOString();
     const booking = {
       id: createId('bk'),
@@ -101,8 +107,9 @@ export function BookingForm() {
       guest_name: guestName.trim(),
       organization: organization.trim(),
       guest_type: guestType,
-      room_id: roomId,
-      room_number: rooms.find(r => r.id === roomId)?.room_number,
+      room_id: roomIds[0],
+      room_ids: roomIds,
+      room_number: firstRoom?.room_number,
       check_in_date: checkInDate,
       check_out_date: checkOutDate,
       number_of_days: numberOfDays,
@@ -205,11 +212,11 @@ export function BookingForm() {
                   disabled={false}
                   onClick={() => {
                     if (isNotSelectable) return;
-                    setRoomId(room.id);
+                    toggleRoom(room.id);
                   }}
                   className={cn(
                     'relative rounded-lg border-2 p-3 text-left transition-all',
-                    roomId === room.id
+                    roomIds.includes(room.id)
                       ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-100'
                       : isUnavailable
                         ? 'border-slate-200 bg-slate-50 opacity-50'
@@ -222,7 +229,7 @@ export function BookingForm() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-bold text-slate-800">{room.room_number}</span>
-                    {roomId === room.id && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                    {roomIds.includes(room.id) && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
                     {isNotSelectable && (
                       <span className="text-[10px] font-medium text-slate-400">
                         {isUnavailable ? t('common.busy') : t('roomStatus.occupied')}
@@ -235,21 +242,14 @@ export function BookingForm() {
             })}
           </div>
 
-          {roomConflict?.hasError && roomConflict.booking && (
-            <div className="mt-4 flex items-start gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-              <div>
-                <span className="font-semibold">
-                  {t('roomLabel')} {roomConflict.roomNumber} {t('form.conflictError')}
-                </span>{' '}
-                <span className="block text-xs text-red-600">
-                  {t('form.conflictDetail', {
-                    guest: roomConflict.booking.guest_name,
-                    start: fmtDate(roomConflict.booking.check_in_date),
-                    end: fmtDate(roomConflict.booking.check_out_date),
-                  })}
+          {roomIds.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-emerald-700">
+              <span className="font-medium">{t('form.selectedRooms')}:</span>
+              {roomIds.map(id => (
+                <span key={id} className="rounded-full bg-emerald-100 px-2.5 py-0.5 font-semibold">
+                  {t('roomLabel')} {rooms.find(r => r.id === id)?.room_number}
                 </span>
-              </div>
+              ))}
             </div>
           )}
         </CardContent>
@@ -267,17 +267,18 @@ export function BookingForm() {
               <span className="text-slate-500">{t('form.numberOfDays')}</span>
               <span className="font-semibold text-slate-800">{numberOfDays || '—'}</span>
             </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-500">{t('form.roomCount')}</span>
+              <span className="font-semibold text-slate-800">{roomCount || '—'}</span>
+            </div>
             <div className="my-2 border-t border-dashed border-slate-300" />
             <div className="flex items-center justify-between text-base">
               <span className="font-medium text-slate-700">{t('form.totalRent')}</span>
               <span className="text-xl font-bold text-emerald-700">{fmtCurrency(totalRent)}</span>
             </div>
             <p className="text-xs text-slate-400">
-              {t('form.calculationText', {
-                type: guestTypeLabel(guestType, lang),
-                rate: fmtCurrency(dailyRate),
-                total: fmtCurrency(totalRent),
-              })}
+              {guestTypeLabel(guestType, lang)} — {fmtCurrency(dailyRate)}
+              {roomCount ? ` × ${roomCount}` : ''} × {numberOfDays || 0}
             </p>
           </div>
         </CardContent>

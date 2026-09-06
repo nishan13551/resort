@@ -7,6 +7,7 @@ export interface BookingInput {
   organization: string;
   guest_type: 'bwdb' | 'govt_other' | 'private';
   room_id: string;
+  room_ids?: string[];
   check_in_date: string;
   check_out_date: string;
   number_of_days: number;
@@ -24,6 +25,10 @@ export interface ConflictResult {
   message: string;
 }
 
+function coversRoom(b: Booking, roomId: string): boolean {
+  return b.room_id === roomId || (b.room_ids?.length ? b.room_ids.includes(roomId) : false);
+}
+
 export function detectBookingConflict(
   bookings: Booking[],
   roomId: string,
@@ -33,16 +38,20 @@ export function detectBookingConflict(
 ): ConflictResult {
   const conflicting = bookings.find(b => {
     if (excludeBookingId && b.id === excludeBookingId) return false;
-    if (b.room_id !== roomId) return false;
+    if (!coversRoom(b, roomId)) return false;
     if (b.booking_status === 'cancelled') return false;
     return datesOverlap(b.check_in_date, b.check_out_date, checkInDate, checkOutDate);
   });
 
   if (conflicting) {
+    const roomNumber =
+      conflicting.room_ids?.includes(roomId)
+        ? undefined
+        : conflicting.room_number;
     return {
       hasError: true,
       booking: conflicting,
-      roomNumber: conflicting.room_number,
+      roomNumber: roomNumber || conflicting.room_number,
       message: `রুমটি নির্বাচিত তারিখের জন্য ইতিমধ্যে বুক করা হয়েছে।`,
     };
   }
@@ -55,7 +64,7 @@ export function computeRoomStatus(
 ): 'available' | 'booked' | 'occupied' {
   const today = getToday();
   const active = bookings.filter(
-    b => b.room_id === roomId &&
+    b => coversRoom(b, roomId) &&
       (b.booking_status === 'booked' || b.booking_status === 'checked_in') &&
       b.check_in_date <= today && b.check_out_date >= today
   );

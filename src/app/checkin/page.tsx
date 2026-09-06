@@ -14,7 +14,7 @@ import { Modal } from '@/components/ui/modal';
 import { RoomStatusBadge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/toast';
 import { useLang, guestTypeLabel } from '@/lib/i18n';
-import { isToday } from '@/lib/utils';
+import { bookingRoomsLabel, isToday } from '@/lib/utils';
 
 export default function CheckinPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function CheckinPage() {
 
   const occupiedRooms = rooms.filter(r => r.status === 'occupied');
 
-  const canCheckIn = hasRole('admin', 'caretaker');
+  const canCheckIn = hasRole('admin');
 
   function handleConfirm() {
     if (!confirmBooking) return;
@@ -53,7 +53,7 @@ export default function CheckinPage() {
   const selected = bookings.find(b => b.id === confirmBooking);
 
   return (
-    <RequireAuth>
+    <RequireAuth roles={['admin']}>
       <DashboardLayout>
         <div className="space-y-6">
           {!canCheckIn && (
@@ -84,7 +84,7 @@ export default function CheckinPage() {
                           <div className="min-w-0">
                             <div className="truncate text-sm font-semibold text-slate-800">{b.guest_name}</div>
                             <div className="mt-0.5 text-xs text-slate-500">
-                              {t('roomLabel')} {b.room_number} • {guestTypeLabel(b.guest_type, lang)}
+                              {t('roomLabel')} {bookingRoomsLabel(b, rooms)} • {guestTypeLabel(b.guest_type, lang)}
                               {b.organization ? ` • ${b.organization}` : ''}
                             </div>
                           </div>
@@ -169,7 +169,7 @@ export default function CheckinPage() {
               <div className="rounded-lg bg-slate-50 p-4">
                 <div className="text-base font-semibold text-slate-800">{selected.guest_name}</div>
                 <div className="mt-1 text-sm text-slate-500">
-                  {t('roomLabel')} {selected.room_number} • {guestTypeLabel(selected.guest_type, lang)}
+                  {t('roomLabel')} {bookingRoomsLabel(selected, rooms)} • {guestTypeLabel(selected.guest_type, lang)}
                 </div>
                 {selected.organization && <div className="text-sm text-slate-500">{selected.organization}</div>}
                 <div className="mt-3 grid grid-cols-2 gap-2 text-sm">

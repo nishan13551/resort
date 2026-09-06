@@ -15,7 +15,7 @@ import { Input, Select } from '@/components/ui/form';
 import { useToast } from '@/components/ui/toast';
 import { useLang, guestTypeLabel, bookingStatusLabel } from '@/lib/i18n';
 import { Booking, BookingStatus, GuestType } from '@/lib/types';
-import { getToday } from '@/lib/utils';
+import { getToday, bookingRoomsLabel } from '@/lib/utils';
 import { computeRoomStatus } from '@/lib/conflict-detector';
 
 function BookingStatusBadge({ status }: { status: BookingStatus }) {
@@ -49,16 +49,16 @@ export default function BookingsPage() {
   const filtered = useMemo(() => {
     return bookings
       .filter(b => {
-        if (search && !b.guest_name.toLowerCase().includes(search.toLowerCase()) && !(b.room_number ?? '').includes(search)) {
+        if (search && !b.guest_name.toLowerCase().includes(search.toLowerCase()) && !bookingRoomsLabel(b, rooms).toLowerCase().includes(search)) {
           return false;
         }
         if (guestTypeFilter !== 'all' && b.guest_type !== guestTypeFilter) return false;
-        if (roomFilter !== 'all' && b.room_id !== roomFilter) return false;
+        if (roomFilter !== 'all' && b.room_id !== roomFilter && !(b.room_ids?.length ? b.room_ids.includes(roomFilter) : false)) return false;
         if (statusFilter !== 'all' && b.booking_status !== statusFilter) return false;
         return true;
       })
       .sort((a, b) => b.booking_date.localeCompare(a.booking_date));
-  }, [bookings, search, guestTypeFilter, roomFilter, statusFilter]);
+  }, [bookings, rooms, search, guestTypeFilter, roomFilter, statusFilter]);
 
   function handleDelete() {
     if (!deleteTarget) return;
@@ -101,7 +101,7 @@ export default function BookingsPage() {
                 {t('list.active')} {activeCount} • {t('list.todaysBookings')} {todaysBookings.length} • {t('list.occupiedRooms')} {occupiedCount}
               </p>
             </div>
-            {hasRole('admin', 'caretaker') && (
+            {hasRole('admin') && (
               <Button onClick={() => router.push('/bookings/new')}>
                 <Plus className="h-4 w-4" />
                 {t('list.newBooking')}
@@ -159,7 +159,7 @@ export default function BookingsPage() {
                           <div className="font-medium text-slate-800">{b.guest_name}</div>
                           <div className="text-xs text-slate-400">{b.organization || b.booking_date}</div>
                         </td>
-                        <td className="px-3 py-3 font-medium text-slate-700">{t('roomLabel')} {b.room_number}</td>
+                        <td className="px-3 py-3 font-medium text-slate-700">{bookingRoomsLabel(b, rooms)}</td>
                         <td className="px-3 py-3 text-slate-600">{guestTypeLabel(b.guest_type, lang)}</td>
                         <td className="px-3 py-3 text-slate-600">{fmtDate(b.check_in_date)}</td>
                         <td className="px-3 py-3 text-slate-600">{fmtDate(b.check_out_date)}</td>
@@ -174,7 +174,7 @@ export default function BookingsPage() {
                         <td className="px-3 py-3"><BookingStatusBadge status={b.booking_status} /></td>
                         <td className="px-3 py-3">
                           <div className="flex items-center gap-1">
-                            {hasRole('admin', 'caretaker') && b.booking_status === 'booked' && (
+                            {hasRole('admin') && b.booking_status === 'booked' && (
                               <Button
                                 size="sm"
                                 variant="success"
@@ -216,7 +216,7 @@ export default function BookingsPage() {
 
         <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title={t('list.deleteBookig')} size="sm">
           <p className="text-sm text-slate-600">
-            {t('list.deleteConfirm')} <span className="font-semibold">{deleteTarget?.guest_name}</span> ({t('roomLabel')} {deleteTarget?.room_number})
+            {t('list.deleteConfirm')} <span className="font-semibold">{deleteTarget?.guest_name}</span> ({t('roomLabel')} {deleteTarget && bookingRoomsLabel(deleteTarget, rooms)})
           </p>
           <div className="mt-4 flex justify-end gap-2">
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>{t('common.cancel')}</Button>
@@ -226,7 +226,7 @@ export default function BookingsPage() {
 
         <Modal open={!!cancelTarget} onClose={() => setCancelTarget(null)} title={t('list.cancelBooking')} size="sm">
           <p className="text-sm text-slate-600">
-            <span className="font-semibold">{cancelTarget?.guest_name}</span> ({t('roomLabel')} {cancelTarget?.room_number}) {t('list.cancelConfirm')}
+            <span className="font-semibold">{cancelTarget?.guest_name}</span> ({t('roomLabel')} {cancelTarget && bookingRoomsLabel(cancelTarget, rooms)}) {t('list.cancelConfirm')}
           </p>
           <div className="mt-4 flex justify-end gap-2">
             <Button variant="outline" onClick={() => setCancelTarget(null)}>{t('common.no')}</Button>

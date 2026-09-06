@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input, Select } from '@/components/ui/form';
 import { useToast } from '@/components/ui/toast';
 import { useLang, guestTypeLabel, bookingStatusLabel } from '@/lib/i18n';
-import { formatDateShort, toCSVRow } from '@/lib/utils';
+import { formatDateShort, toCSVRow, bookingRoomsLabel } from '@/lib/utils';
 import { BookingStatus, GuestType } from '@/lib/types';
 
 function StatusBadge({ status }: { status: BookingStatus }) {
@@ -42,16 +42,16 @@ export default function HistoryPage() {
   const filtered = useMemo(() => {
     return bookings
       .filter(b => {
-        if (search && !b.guest_name.toLowerCase().includes(search.toLowerCase()) && !(b.room_number ?? '').includes(search)) return false;
+        if (search && !b.guest_name.toLowerCase().includes(search.toLowerCase()) && !bookingRoomsLabel(b, rooms).toLowerCase().includes(search)) return false;
         if (fromDate && b.check_in_date < fromDate) return false;
         if (toDate && b.check_in_date > toDate) return false;
         if (guestType !== 'all' && b.guest_type !== guestType) return false;
-        if (roomFilter !== 'all' && b.room_id !== roomFilter) return false;
+        if (roomFilter !== 'all' && b.room_id !== roomFilter && !(b.room_ids?.length ? b.room_ids.includes(roomFilter) : false)) return false;
         if (statusFilter !== 'all' && b.booking_status !== statusFilter) return false;
         return true;
       })
       .sort((a, b) => b.check_in_date.localeCompare(a.check_in_date));
-  }, [bookings, search, fromDate, toDate, guestType, roomFilter, statusFilter]);
+  }, [bookings, rooms, search, fromDate, toDate, guestType, roomFilter, statusFilter]);
 
   function exportCSV() {
     const headers = [
@@ -64,7 +64,7 @@ export default function HistoryPage() {
       b.guest_name,
       b.organization,
       b.guest_type,
-      b.room_number ?? '',
+      bookingRoomsLabel(b, rooms),
       formatDateShort(b.check_in_date),
       formatDateShort(b.check_out_date),
       b.number_of_days,
@@ -190,7 +190,7 @@ export default function HistoryPage() {
                             <div className="font-medium text-slate-800">{b.guest_name}</div>
                             {b.organization && <div className="text-xs text-slate-400">{b.organization}</div>}
                           </td>
-                          <td className="px-3 py-2.5 text-slate-600">{t('roomLabel')} {b.room_number}</td>
+                          <td className="px-3 py-2.5 text-slate-600">{bookingRoomsLabel(b, rooms)}</td>
                           <td className="px-3 py-2.5 text-slate-600">{guestTypeLabel(b.guest_type, lang)}</td>
                           <td className="px-3 py-2.5 text-slate-600">{fmtDate(b.check_in_date)}</td>
                           <td className="px-3 py-2.5 text-slate-600">{fmtDate(b.check_out_date)}</td>

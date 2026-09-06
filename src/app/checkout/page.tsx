@@ -13,15 +13,15 @@ import { Modal } from '@/components/ui/modal';
 import { Badge } from '@/components/ui/badge';
 import { Input, FormLabel, FormGroup } from '@/components/ui/form';
 import { useToast } from '@/components/ui/toast';
-import { useLang, guestTypeLabel, paymentStatusLabel } from '@/lib/i18n';
+import { useLang, guestTypeLabel, paymentStatusLabel, bookingStatusLabel } from '@/lib/i18n';
 import { Booking, PaymentStatus } from '@/lib/types';
-import { isToday } from '@/lib/utils';
+import { bookingRoomsLabel, bookingRoomsOf, isToday } from '@/lib/utils';
 import { calculateDueAmount } from '@/lib/rent-calculator';
 
 function CheckoutPageContent() {
   const searchParams = useSearchParams();
   const { currentUser, hasRole } = useAuth();
-  const { bookings, updateBooking } = useData();
+  const { bookings, rooms, updateBooking } = useData();
   const { showToast } = useToast();
   const { t, lang, fmtDate, fmtCurrency } = useLang();
 
@@ -31,7 +31,7 @@ function CheckoutPageContent() {
   const currentlyCheckedIn = useMemo(
     () =>
       bookings
-        .filter(b => b.booking_status === 'checked_in')
+        .filter(b => ['booked', 'checked_in'].includes(b.booking_status))
         .sort((a, b) => a.check_out_date.localeCompare(b.check_out_date)),
     [bookings]
   );
@@ -61,6 +61,7 @@ function CheckoutPageContent() {
     if (!target) return;
     updateBooking(target.id, {
       booking_status: 'checked_out',
+      actual_check_in: target.actual_check_in ?? new Date().toISOString(),
       actual_check_out: new Date().toISOString(),
       amount_paid: amountPaid,
       due_amount: dueAmount,
@@ -91,7 +92,7 @@ function CheckoutPageContent() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <LogOut className="h-5 w-5 text-amber-600" />
-                  {t('co.currentlyCheckedIn')}
+                  {t('co.activeGuests')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -102,8 +103,10 @@ function CheckoutPageContent() {
                     <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 p-3">
                       <div>
                         <div className="text-sm font-semibold text-slate-800">{b.guest_name}</div>
-                        <div className="mt-0.5 text-xs text-slate-500">
-                          {t('roomLabel')} {b.room_number} • {guestTypeLabel(b.guest_type, lang)}
+                        <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+                          <span>{t('roomLabel')} {bookingRoomsLabel(b, rooms)}</span>
+                          <span>• {guestTypeLabel(b.guest_type, lang)}</span>
+                          <Badge tone={b.booking_status === 'booked' ? 'yellow' : 'red'}>{bookingStatusLabel(b.booking_status, lang)}</Badge>
                         </div>
                         <div className="mt-1 text-xs text-slate-400">
                           {t('co.checkOutOn')}: {fmtDate(b.check_out_date)}
@@ -144,10 +147,14 @@ function CheckoutPageContent() {
                     </div>
                     {target.organization && <div className="text-sm text-slate-500">{target.organization}</div>}
                   </div>
-                  <Badge tone="blue">{t('roomLabel')} {target.room_number}</Badge>
+                  <Badge tone="blue">{t('roomLabel')} {bookingRoomsLabel(target, rooms)}</Badge>
                 </div>
 
-                <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  <div>
+                    <div className="text-xs text-slate-400">{t('form.bookingDate')}</div>
+                    <div className="text-sm font-medium text-slate-700">{fmtDate(target.booking_date)}</div>
+                  </div>
                   <div>
                     <div className="text-xs text-slate-400">{t('co.checkInOn')}</div>
                     <div className="text-sm font-medium text-slate-700">{fmtDate(target.check_in_date)}</div>
@@ -169,7 +176,7 @@ function CheckoutPageContent() {
                 <div className="mt-4 space-y-1.5 border-t border-slate-200 pt-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-500">{t('co.calculation')}</span>
-                    <span className="text-slate-700">{fmtCurrency(target.daily_rate)} × {target.number_of_days}</span>
+                    <span className="text-slate-700">{t('co.calcDetail', { rate: fmtCurrency(target.daily_rate), days: target.number_of_days, rooms: bookingRoomsOf(target).length, total: fmtCurrency(target.total_rent) })}</span>
                   </div>
                   <div className="flex justify-between text-base font-semibold">
                     <span className="text-slate-700">{t('co.totalRent')}</span>
@@ -177,6 +184,13 @@ function CheckoutPageContent() {
                   </div>
                 </div>
               </div>
+
+              {target.notes && (
+                <div className="rounded-lg bg-slate-50 p-3">
+                  <div className="text-xs text-slate-400">{t('form.notes')}</div>
+                  <div className="mt-1 whitespace-pre-line text-sm text-slate-700">{target.notes}</div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 <FormGroup>

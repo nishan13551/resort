@@ -40,7 +40,7 @@ export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose:
   ];
 
   const showUsers = currentUser?.role === 'admin';
-  const caretakerOnly = ['/rooms', '/bookings', '/bookings/new', '/checkin', '/checkout'];
+  const caretakerOnly = ['/rooms', '/bookings', '/checkout'];
   const visibleNav = currentUser?.role === 'admin'
     ? NAV_ITEMS
     : NAV_ITEMS.filter(item => caretakerOnly.includes(item.href));

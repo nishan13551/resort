@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Booking, Room } from './types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -93,4 +94,15 @@ export function getWeekEnd(): string {
 
 export function toCSVRow(values: (string | number)[]): string {
   return values.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+}
+
+export function bookingRoomsOf(booking: Booking): string[] {
+  const ids = booking.room_ids?.length ? booking.room_ids : [booking.room_id];
+  return ids.filter(Boolean);
+}
+
+export function bookingRoomsLabel(booking: Booking, rooms: Room[]): string {
+  const byId = new Map(rooms.map(r => [r.id, r.room_number]));
+  const labels = bookingRoomsOf(booking).map(id => byId.get(id) ?? booking.room_number ?? id);
+  return labels.filter(Boolean).join(', ');
 }

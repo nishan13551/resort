@@ -32,6 +32,7 @@ export interface Booking {
   guest_type: GuestType;
   room_id: string;
   room_number?: string;
+  room_ids?: string[];
   check_in_date: string;
   check_out_date: string;
   number_of_days: number;

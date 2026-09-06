@@ -20,10 +20,10 @@ export default function NewBookingPage() {
 
   if (!currentUser) return null;
 
-  const canBook = hasRole('admin', 'caretaker');
+  const canBook = hasRole('admin');
 
   return (
-    <RequireAuth roles={['admin', 'caretaker']}>
+    <RequireAuth roles={['admin']}>
       <DashboardLayout>
         {!canBook ? (
           <Card>
