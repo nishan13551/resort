@@ -138,6 +138,11 @@ const bn: Dict = {
   'dash.checkoutOn': 'চেক-আউট:',
   'dash.goToCheckin': 'চেক-ইন পেজে যান',
   'dash.goToCheckout': 'চেক-আউট পেজে যান',
+  'dash.clickToEdit': 'সম্পাদনা করুন',
+  'dash.editValue': 'মান সম্পাদনা',
+  'dash.autoValue': 'স্বয়ংক্রিয় মান',
+  'dash.overrideValue': 'নতুন মান',
+  'dash.clearOverride': 'স্বয়ংক্রিয় মানে ফেরত',
 
   // Room cards
   'room.currentGuest': 'বর্তমান অতিথি',
@@ -513,6 +518,11 @@ const en: Dict = {
   'dash.checkoutOn': 'Check-out:',
   'dash.goToCheckin': 'Go to Check-In page',
   'dash.goToCheckout': 'Go to Check-Out page',
+  'dash.clickToEdit': 'Edit',
+  'dash.editValue': 'Edit Value',
+  'dash.autoValue': 'Auto value',
+  'dash.overrideValue': 'New value',
+  'dash.clearOverride': 'Reset to auto',
 
   'room.currentGuest': 'Current Guest',
   'room.bookingHistory': 'Booking History (Recent)',

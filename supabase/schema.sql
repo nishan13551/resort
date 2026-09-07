@@ -64,6 +64,19 @@ CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(booking_status);
 CREATE INDEX IF NOT EXISTS idx_bookings_guest_type ON bookings(guest_type);
 
 -- ============================================================
+-- DASHBOARD OVERRIDES
+-- Admin-set manual values that replace auto-computed dashboard
+-- stats (e.g. monthly income corrected to match the paper register).
+-- key is the metric name; value is the admin-entered override.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS dashboard_overrides (
+  key TEXT PRIMARY KEY,
+  value NUMERIC NOT NULL,
+  updated_by TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================================
 -- STORAGE WE CANNOT CREATE: see seed script
 -- (No RLS is enforced for this app; anon key is read/write.)
 -- ============================================================
@@ -73,3 +86,4 @@ CREATE INDEX IF NOT EXISTS idx_bookings_guest_type ON bookings(guest_type);
 -- ============================================================
 ALTER PUBLICATION supabase_realtime ADD TABLE rooms;
 ALTER PUBLICATION supabase_realtime ADD TABLE bookings;
+ALTER PUBLICATION supabase_realtime ADD TABLE dashboard_overrides;
