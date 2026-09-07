@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { addDays, startOfWeek, addWeeks, format } from 'date-fns';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
-import { useAuth } from '@/lib/auth-provider';
 import { useData } from '@/lib/data-provider';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,7 +27,6 @@ function getDaysInMonth(year: number, month: number) {
 }
 
 export default function CalendarPage() {
-  const { currentUser } = useAuth();
   const { bookings, rooms } = useData();
   const { t } = useLang();
   const [view, setView] = useState<ViewMode>('monthly');
@@ -67,8 +65,6 @@ export default function CalendarPage() {
       : view === 'weekly'
         ? `${format(startOfWeek(cursor, { weekStartsOn: 1 }), 'dd MMM')} – ${format(addDays(startOfWeek(cursor, { weekStartsOn: 1 }), 6), 'dd MMM yyyy')}`
         : format(cursor, 'MMMM yyyy');
-
-  if (!currentUser) return null;
 
   return (
     <RequireAuth roles={['admin']}>

@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useAuth } from '@/lib/auth-provider';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
@@ -10,15 +8,8 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLang } from '@/lib/i18n';
 
 export default function NewBookingPage() {
-  const router = useRouter();
-  const { currentUser, hasRole } = useAuth();
+  const { hasRole } = useAuth();
   const { t } = useLang();
-
-  useEffect(() => {
-    if (!currentUser) router.push('/login');
-  }, [currentUser, router]);
-
-  if (!currentUser) return null;
 
   const canBook = hasRole('admin');
 

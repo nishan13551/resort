@@ -16,7 +16,7 @@ import { useToast } from '@/components/ui/toast';
 import { useLang, guestTypeLabel, bookingStatusLabel } from '@/lib/i18n';
 
 export default function RoomsPage() {
-  const { currentUser, hasRole } = useAuth();
+  const { hasRole } = useAuth();
   const { bookings, addRoom, updateRoom } = useData();
   const rooms = useRoomsWithStatus();
   const { showToast } = useToast();
@@ -67,8 +67,6 @@ export default function RoomsPage() {
     updateRoom(id, { is_active: !room.is_active });
     showToast(room.is_active ? t('room.deactivated') : t('room.activated'));
   }
-
-  if (!currentUser) return null;
 
   const selectedRoomData = rooms.find(r => r.id === selectedRoom);
   const selectedBookings = bookings.filter(b => b.room_id === selectedRoom);

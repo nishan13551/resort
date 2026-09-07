@@ -324,7 +324,6 @@ function CaretakerCheckout() {
 
 function AdminCheckoutList() {
   const searchParams = useSearchParams();
-  const { currentUser } = useAuth();
   const { bookings, rooms, updateBooking } = useData();
   const { showToast } = useToast();
   const { t, lang, fmtDate, fmtCurrency } = useLang();
@@ -373,8 +372,6 @@ function AdminCheckoutList() {
     setCheckoutTarget(null);
     setAmountPaidStr('0');
   }
-
-  if (!currentUser) return null;
 
   return (
     <div className="space-y-6">

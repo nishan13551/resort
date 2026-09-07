@@ -69,6 +69,9 @@ const bn: Dict = {
   'common.peopleCount': '{n} জন',
   'common.permissionDenied': 'অনুমতি নেই',
   'common.permissionDeniedDesc': 'এই পৃষ্ঠায় প্রবেশের জন্য আপনার অনুমতি নেই।',
+  'common.notFound': 'পৃষ্ঠাটি পাওয়া যায়নি',
+  'common.notFoundDesc': 'আপনি যে পৃষ্ঠাটি খুঁজছেন তা বিদ্যমান নেই।',
+  'common.goHome': 'হোম পেজে যান',
 
   // Roles
   'role.admin': 'অ্যাডমিন',
@@ -454,6 +457,9 @@ const en: Dict = {
   'common.peopleCount': '{n} people',
   'common.permissionDenied': 'Permission Denied',
   'common.permissionDeniedDesc': 'You are not authorized to view this page.',
+  'common.notFound': 'Page not found',
+  'common.notFoundDesc': 'The page you are looking for does not exist.',
+  'common.goHome': 'Go to Home',
 
   'role.admin': 'Admin',
   'role.caretaker': 'Caretaker',

@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { Search, FileDown } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
-import { useAuth } from '@/lib/auth-provider';
 import { useData } from '@/lib/data-provider';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,6 @@ function StatusBadge({ status }: { status: BookingStatus }) {
 }
 
 export default function HistoryPage() {
-  const { currentUser } = useAuth();
   const { bookings, rooms } = useData();
   const { showToast } = useToast();
   const { t, lang, fmtDate, fmtCurrency } = useLang();
@@ -93,8 +91,6 @@ export default function HistoryPage() {
     const due = filtered.reduce((s, b) => s + b.due_amount, 0);
     return { rent, paid, due };
   }, [filtered]);
-
-  if (!currentUser) return null;
 
   return (
     <RequireAuth roles={['admin']}>

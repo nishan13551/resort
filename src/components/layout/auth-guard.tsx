@@ -8,17 +8,17 @@ import { useLang } from '@/lib/i18n';
 import { UserRole } from '@/lib/types';
 
 export function RequireAuth({ children, roles }: { children: React.ReactNode; roles?: UserRole[] }) {
-  const { currentUser } = useAuth();
+  const { currentUser, authReady } = useAuth();
   const router = useRouter();
   const { t } = useLang();
 
   useEffect(() => {
-    if (!currentUser) {
-      router.push('/login');
+    if (authReady && !currentUser) {
+      router.replace('/login');
     }
-  }, [currentUser, router]);
+  }, [authReady, currentUser, router]);
 
-  if (!currentUser) {
+  if (!authReady || !currentUser) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <div className="flex items-center gap-2 text-slate-400">

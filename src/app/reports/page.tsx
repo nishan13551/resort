@@ -17,7 +17,6 @@ import {
 import { Building2, Wallet, TrendingUp, Percent } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
-import { useAuth } from '@/lib/auth-provider';
 import { useData } from '@/lib/data-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input, FormLabel, FormGroup } from '@/components/ui/form';
@@ -30,7 +29,6 @@ type RangeKey = 'today' | 'week' | 'month' | 'custom';
 const PIE_COLORS = ['#047857', '#3b82f6', '#f59e0b'];
 
 export default function ReportsPage() {
-  const { currentUser } = useAuth();
   const { bookings, rooms } = useData();
   const { t, lang, fmtDate, fmtCurrency } = useLang();
 
@@ -146,8 +144,6 @@ export default function ReportsPage() {
   ];
 
   const fmtTooltip = (v: unknown) => fmtCurrency(Number(v));
-
-  if (!currentUser) return null;
 
   return (
     <RequireAuth roles={['admin']}>

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input, FormLabel, FormGroup } from '@/components/ui/form';
 
 export default function LoginPage() {
-  const { currentUser, login } = useAuth();
+  const { currentUser, authReady, login } = useAuth();
   const { t, lang, toggleLang } = useLang();
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -19,10 +19,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (currentUser) {
+    if (authReady && currentUser) {
       router.replace(currentUser.role === 'caretaker' ? '/bookings' : '/dashboard');
     }
-  }, [currentUser, router]);
+  }, [authReady, currentUser, router]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();

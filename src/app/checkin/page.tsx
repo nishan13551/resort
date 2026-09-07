@@ -18,7 +18,7 @@ import { bookingRoomsLabel, isToday } from '@/lib/utils';
 
 export default function CheckinPage() {
   const router = useRouter();
-  const { currentUser, hasRole } = useAuth();
+  const { hasRole } = useAuth();
   const { bookings, updateBooking } = useData();
   const rooms = useRoomsWithStatus();
   const { showToast } = useToast();
@@ -47,8 +47,6 @@ export default function CheckinPage() {
     showToast(t('ci.done'));
     setConfirmBooking(null);
   }
-
-  if (!currentUser) return null;
 
   const selected = bookings.find(b => b.id === confirmBooking);
 

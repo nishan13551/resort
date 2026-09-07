@@ -31,7 +31,7 @@ function BookingStatusBadge({ status }: { status: BookingStatus }) {
 
 export default function BookingsPage() {
   const router = useRouter();
-  const { currentUser, hasRole } = useAuth();
+  const { hasRole } = useAuth();
   const { bookings, rooms, deleteBooking, updateBooking } = useData();
   const { showToast } = useToast();
   const { t, lang, fmtDate, fmtCurrency } = useLang();
@@ -87,8 +87,6 @@ export default function BookingsPage() {
   const today = getToday();
   const todaysBookings = bookings.filter(b => b.check_in_date === today || b.check_out_date === today);
   const occupiedCount = rooms.filter(r => computeRoomStatus(r.id, bookings) === 'occupied').length;
-
-  if (!currentUser) return null;
 
   return (
     <RequireAuth>

@@ -7,6 +7,7 @@ import { seedUsers } from '../data/mock-data';
 interface AuthContextValue {
   currentUser: User | null;
   users: User[];
+  authReady: boolean;
   login: (email: string, password: string) => { success: boolean; role?: UserRole; error?: 'invalid' | 'disabled' | 'failed' };
   logout: () => void;
   addUser: (user: Omit<User, 'id' | 'created_at' | 'updated_at'>, password?: string) => void;
@@ -50,12 +51,14 @@ function loadSession(): string | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<User[]>(seedUsers);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     // Load persisted data after mount to avoid SSR hydration mismatch
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setUsers(loadUsers());
     setCurrentUserId(loadSession());
+    setAuthReady(true);
   }, []);
 
   useEffect(() => {
@@ -136,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, users, login, logout, addUser, updateUser, deleteUser, can, hasRole }}
+      value={{ currentUser, users, authReady, login, logout, addUser, updateUser, deleteUser, can, hasRole }}
     >
       {children}
     </AuthContext.Provider>
