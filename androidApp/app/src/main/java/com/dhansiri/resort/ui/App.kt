@@ -54,6 +54,7 @@ fun App() {
     }
 
     val strings = Tx(lang == Lang.BN)
+    val currentUser = user
 
     CompositionLocalProvider(
         LocalStrings provides strings,
@@ -66,10 +67,10 @@ fun App() {
                 com.dhansiri.resort.ui.components.FullLoading(Modifier.fillMaxSize().padding(it))
             }
 
-            user == null -> LoginScreen(
+            currentUser == null -> LoginScreen(
                 onLogin = { logged ->
                     user = logged
-                    repository.refresh()
+                    scope.launch { repository.refresh() }
                     snack(strings.welcome + "!")
                 },
             )
@@ -82,7 +83,7 @@ fun App() {
                 ) { padding ->
                     HomeNavigation(
                         repository = repository,
-                        user = user,
+                        user = currentUser,
                         modifier = Modifier.padding(padding),
                         onLangChange = { lang = it },
                         onLogout = {
