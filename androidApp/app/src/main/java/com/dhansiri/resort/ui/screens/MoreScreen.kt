@@ -36,18 +36,21 @@ private data class MoreItem(
 
 @Composable
 fun MoreScreen(
+    isAdmin: Boolean,
     onOpenRooms: () -> Unit,
     onOpenHistory: () -> Unit,
     onOpenReports: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
     val strings = LocalStrings.current
-    val items = listOf(
-        MoreItem(strings.rooms, Icons.Default.Hotel) to onOpenRooms,
-        MoreItem(strings.history, Icons.Default.History) to onOpenHistory,
-        MoreItem(strings.reports, Icons.Default.QueryStats) to onOpenReports,
-        MoreItem(strings.settings, Icons.Default.Settings) to onOpenSettings,
-    )
+    val items = buildList {
+        if (isAdmin) {
+            add(MoreItem(strings.rooms, Icons.Default.Hotel) to onOpenRooms)
+            add(MoreItem(strings.history, Icons.Default.History) to onOpenHistory)
+            add(MoreItem(strings.reports, Icons.Default.QueryStats) to onOpenReports)
+        }
+        add(MoreItem(strings.settings, Icons.Default.Settings) to onOpenSettings)
+    }
 
     Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(strings.more, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
