@@ -44,7 +44,7 @@ export function Modal({
       <div className="absolute inset-0 bg-black/40 fade-in" onClick={onClose} />
       <div
         className={cn(
-          'modal-in relative z-10 w-full rounded-xl bg-white shadow-2xl overflow-hidden',
+          'modal-in relative z-10 flex max-h-[90vh] w-full flex-col rounded-xl bg-white shadow-2xl',
           sizes[size]
         )}
       >
@@ -57,7 +57,7 @@ export function Modal({
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="p-4 sm:p-5">{children}</div>
+        <div className="overflow-y-auto overscroll-contain p-4 sm:p-5">{children}</div>
       </div>
     </div>
   );
