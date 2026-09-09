@@ -15,7 +15,7 @@ export default function Home() {
     if (!currentUser) {
       router.replace('/login');
     } else {
-      router.replace(currentUser.role === 'caretaker' ? '/bookings' : '/dashboard');
+      router.replace(currentUser.role === 'caretaker' ? '/checkout' : '/dashboard');
     }
   }, [authReady, currentUser, router]);
 

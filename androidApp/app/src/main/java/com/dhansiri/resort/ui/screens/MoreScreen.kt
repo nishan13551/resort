@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Hotel
 import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.Settings
@@ -38,7 +37,6 @@ private data class MoreItem(
 fun MoreScreen(
     isAdmin: Boolean,
     onOpenRooms: () -> Unit,
-    onOpenHistory: () -> Unit,
     onOpenReports: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
@@ -46,7 +44,6 @@ fun MoreScreen(
     val items = buildList {
         if (isAdmin) {
             add(MoreItem(strings.rooms, Icons.Default.Hotel) to onOpenRooms)
-            add(MoreItem(strings.history, Icons.Default.History) to onOpenHistory)
             add(MoreItem(strings.reports, Icons.Default.QueryStats) to onOpenReports)
         }
         add(MoreItem(strings.settings, Icons.Default.Settings) to onOpenSettings)

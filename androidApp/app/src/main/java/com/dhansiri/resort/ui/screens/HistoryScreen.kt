@@ -107,7 +107,19 @@ fun HistoryScreen(repository: Repository) {
                             style = MaterialTheme.typography.bodySmall,
                             color = SlateMuted,
                         )
+                        if (booking.organization.isNotBlank()) {
+                            Text(
+                                booking.organization,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = SlateMuted,
+                            )
+                        }
                         if (!cancelled) {
+                            Text(
+                                "${strings.numberOfDays}: ${booking.numberOfDays}  •  ${strings.dueAmount}: ${Logic.formatCurrency(booking.dueAmount, bn)}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = SlateMuted,
+                            )
                             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     "${strings.totalRent}: ${Logic.formatCurrency(booking.totalRent, bn)}  •  ${strings.amountPaid}: ${Logic.formatCurrency(booking.amountPaid, bn)}",

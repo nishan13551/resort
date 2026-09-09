@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { CalendarDays, Plus, LogIn, LogOut, Menu, Bed } from 'lucide-react';
+import { History, LayoutDashboard, LogIn, LogOut, Menu, Bed } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 import { useAuth } from '@/lib/auth-provider';
 import { cn } from '@/lib/utils';
@@ -13,7 +13,7 @@ export function BottomNav({ onMenuClick }: { onMenuClick: () => void }) {
   const { currentUser } = useAuth();
 
   const home = currentUser?.role === 'admin'
-    ? { href: '/dashboard', label: t('nav.dashboard'), icon: CalendarDays }
+    ? { href: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard }
     : { href: '/rooms', label: t('nav.rooms'), icon: Bed };
 
   const tabClass = (active: boolean) =>
@@ -26,13 +26,13 @@ export function BottomNav({ onMenuClick }: { onMenuClick: () => void }) {
 
   const tabs = isCaretaker
     ? [
-        { href: '/bookings', label: t('nav.bookings'), icon: CalendarDays },
         { href: '/checkout', label: t('nav.checkout'), icon: LogOut },
+        { href: '/history', label: t('nav.history'), icon: History },
       ]
     : [
-        { href: '/bookings', label: t('nav.bookings'), icon: CalendarDays },
         { href: '/checkin', label: t('nav.checkin'), icon: LogIn },
         { href: '/checkout', label: t('nav.checkout'), icon: LogOut },
+        { href: '/history', label: t('nav.history'), icon: History },
       ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -57,18 +57,6 @@ export function BottomNav({ onMenuClick }: { onMenuClick: () => void }) {
             <span className="max-w-full truncate">{tab.label}</span>
           </Link>
         ))}
-
-        {!isCaretaker && (
-          <Link
-            href="/bookings/new"
-            className="flex min-w-0 flex-1 flex-col items-center gap-0.5 px-1 py-2 text-[11px] leading-none font-medium text-slate-400 transition-all active:scale-95 hover:text-emerald-600"
-          >
-            <span className="flex h-11 w-11 -mt-4 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-900/30 transition-transform active:scale-90">
-              <Plus className="h-6 w-6" strokeWidth={2.5} />
-            </span>
-            <span>{t('nav.newBooking')}</span>
-          </Link>
-        )}
 
         <button
           onClick={onMenuClick}

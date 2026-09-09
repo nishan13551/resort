@@ -9,14 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.EventNote
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Hotel
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Dashboard
-import androidx.compose.material.icons.outlined.EventNote
 import androidx.compose.material.icons.outlined.FlightTakeoff
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Hotel
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Icon
@@ -43,8 +43,6 @@ import com.dhansiri.resort.ui.theme.SlateMuted
 
 object Routes {
     const val DASHBOARD = "dashboard"
-    const val BOOKINGS = "bookings"
-    const val NEW_BOOKING = "new_booking"
     const val CHECKIN = "checkin"
     const val CHECKOUT = "checkout"
     const val ROOMS = "rooms"
@@ -82,8 +80,8 @@ fun HomeNavigation(
         } else {
             add(Tab(Routes.ROOMS, strings.rooms, Icons.Filled.Hotel, Icons.Outlined.Hotel))
         }
-        add(Tab(Routes.BOOKINGS, strings.bookings, Icons.Filled.EventNote, Icons.Outlined.EventNote))
         add(Tab(Routes.CHECKOUT, strings.checkout, Icons.Filled.MoveToInbox, Icons.Outlined.CalendarMonth))
+        add(Tab(Routes.HISTORY, strings.history, Icons.Filled.History, Icons.Outlined.History))
         add(Tab(Routes.MORE, strings.more, Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz))
     }
 
@@ -94,7 +92,7 @@ fun HomeNavigation(
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = if (isAdmin) Routes.DASHBOARD else Routes.BOOKINGS,
+            startDestination = if (isAdmin) Routes.DASHBOARD else Routes.CHECKOUT,
             modifier = Modifier.fillMaxSize(),
             enterTransition = {
                 slideInHorizontally(tween(280)) { it / 8 } + fadeIn(tween(280))
@@ -107,20 +105,6 @@ fun HomeNavigation(
         ) {
             composable(Routes.DASHBOARD) {
                 com.dhansiri.resort.ui.screens.DashboardScreen(repository = repository, user = user, onSnack = onSnack)
-            }
-            composable(Routes.BOOKINGS) {
-                com.dhansiri.resort.ui.screens.BookingsScreen(
-                    repository = repository,
-                    onNewBooking = { navController.navigate(Routes.NEW_BOOKING) },
-                    onSnack = onSnack,
-                )
-            }
-            composable(Routes.NEW_BOOKING) {
-                com.dhansiri.resort.ui.screens.NewBookingScreen(
-                    repository = repository,
-                    onDone = { navController.popBackStack() },
-                    onSnack = onSnack,
-                )
             }
             composable(Routes.CHECKIN) {
                 com.dhansiri.resort.ui.screens.CheckinScreen(repository = repository, onSnack = onSnack)
@@ -153,7 +137,6 @@ fun HomeNavigation(
                 com.dhansiri.resort.ui.screens.MoreScreen(
                     isAdmin = isAdmin,
                     onOpenRooms = { navController.navigate(Routes.ROOMS) },
-                    onOpenHistory = { navController.navigate(Routes.HISTORY) },
                     onOpenReports = { navController.navigate(Routes.REPORTS) },
                     onOpenSettings = { navController.navigate(Routes.SETTINGS) },
                 )
@@ -200,9 +183,9 @@ fun HomeNavigation(
 
 private fun tabRoutes(): Set<String> = setOf(
     Routes.DASHBOARD,
-    Routes.BOOKINGS,
     Routes.CHECKIN,
     Routes.CHECKOUT,
+    Routes.HISTORY,
     Routes.ROOMS,
     Routes.MORE,
 )

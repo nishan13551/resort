@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { LogOut, ReceiptText, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { LogOut, ReceiptText, AlertTriangle, CheckCircle2, Plus } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
 import { useAuth } from '@/lib/auth-provider';
@@ -533,15 +533,24 @@ function AdminCheckoutList() {
 /* ---------- Router ---------- */
 
 function CheckoutPageContent() {
-  const { currentUser } = useAuth();
-  const isCaretaker = currentUser?.role === 'caretaker';
+  const [showManual, setShowManual] = useState(false);
+  const { t } = useLang();
 
   return (
     <RequireAuth>
       <DashboardLayout>
         <div className="space-y-6">
-          <CaretakerCheckout />
-          {!isCaretaker && <AdminCheckoutList />}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-slate-800">{t('co.title')}</h2>
+            <Button onClick={() => setShowManual(true)}>
+              <Plus className="h-4 w-4" />
+              {t('co.newCheckout')}
+            </Button>
+          </div>
+          <AdminCheckoutList />
+          <Modal open={showManual} onClose={() => setShowManual(false)} title={t('co.newCheckout')} size="lg">
+            <CaretakerCheckout />
+          </Modal>
         </div>
       </DashboardLayout>
     </RequireAuth>

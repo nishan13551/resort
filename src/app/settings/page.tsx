@@ -108,7 +108,7 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-3 gap-3 text-center">
                     <div>
                       <div className="text-2xl font-bold text-slate-800">{demoStats.bookings}</div>
-                      <div className="text-xs text-slate-500">{t('nav.bookings')}</div>
+                      <div className="text-xs text-slate-500">{t('set.records')}</div>
                     </div>
                     <div>
                       <div className="text-2xl font-bold text-slate-800">{demoStats.rooms}</div>

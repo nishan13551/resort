@@ -5,8 +5,6 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Bed,
-  CalendarDays,
-  PlusCircle,
   LogIn,
   LogOut,
   CalendarRange,
@@ -30,8 +28,6 @@ export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose:
   const NAV_ITEMS = [
     { href: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
     { href: '/rooms', label: t('nav.rooms'), icon: Bed },
-    { href: '/bookings', label: t('nav.bookings'), icon: CalendarDays },
-    { href: '/bookings/new', label: t('nav.newBooking'), icon: PlusCircle },
     { href: '/checkin', label: t('nav.checkin'), icon: LogIn },
     { href: '/checkout', label: t('nav.checkout'), icon: LogOut },
     { href: '/calendar', label: t('nav.calendar'), icon: CalendarRange },
@@ -40,7 +36,7 @@ export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose:
   ];
 
   const showUsers = currentUser?.role === 'admin';
-  const caretakerOnly = ['/rooms', '/bookings', '/checkout'];
+  const caretakerOnly = ['/rooms', '/checkout', '/history'];
   const visibleNav = currentUser?.role === 'admin'
     ? NAV_ITEMS
     : NAV_ITEMS.filter(item => caretakerOnly.includes(item.href));

@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (authReady && currentUser) {
-      router.replace(currentUser.role === 'caretaker' ? '/bookings' : '/dashboard');
+      router.replace(currentUser.role === 'caretaker' ? '/checkout' : '/dashboard');
     }
   }, [authReady, currentUser, router]);
 
@@ -31,7 +31,7 @@ export default function LoginPage() {
     const result = login(email, password);
     setLoading(false);
     if (result.success) {
-      router.push(result.role === 'caretaker' ? '/bookings' : '/dashboard');
+      router.push(result.role === 'caretaker' ? '/checkout' : '/dashboard');
     } else {
       setError(t(result.error === 'disabled' ? 'login.disabled' : 'login.invalid'));
     }

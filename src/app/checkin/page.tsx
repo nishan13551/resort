@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogIn, CheckCircle2 } from 'lucide-react';
+import { LogIn, CheckCircle2, Plus } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
 import { useAuth } from '@/lib/auth-provider';
 import { useData } from '@/lib/data-provider';
 import { useRoomsWithStatus } from '@/lib/use-dashboard-data';
+import { BookingForm } from '@/components/bookings/booking-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
@@ -25,6 +26,7 @@ export default function CheckinPage() {
   const { t, lang, fmtDate, fmtCurrency } = useLang();
 
   const [confirmBooking, setConfirmBooking] = useState<string | null>(null);
+  const [showNewCheckin, setShowNewCheckin] = useState(false);
 
   const pendingCheckins = useMemo(
     () =>
@@ -54,6 +56,15 @@ export default function CheckinPage() {
     <RequireAuth roles={['admin']}>
       <DashboardLayout>
         <div className="space-y-6">
+          {canCheckIn && (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-slate-800">{t('nav.checkin')}</h2>
+              <Button onClick={() => setShowNewCheckin(true)}>
+                <Plus className="h-4 w-4" />
+                {t('ci.newCheckin')}
+              </Button>
+            </div>
+          )}
           {!canCheckIn && (
             <Card>
               <CardHeader><CardTitle>{t('common.permissionDenied')}</CardTitle></CardHeader>
@@ -160,6 +171,10 @@ export default function CheckinPage() {
             </Card>
           </div>
         </div>
+
+        <Modal open={showNewCheckin} onClose={() => setShowNewCheckin(false)} title={t('ci.newCheckin')} size="lg">
+          <BookingForm mode="checkin" onDone={() => setShowNewCheckin(false)} />
+        </Modal>
 
         <Modal open={!!confirmBooking} onClose={() => setConfirmBooking(null)} title={t('ci.confirmTitle')}>
           {selected && (

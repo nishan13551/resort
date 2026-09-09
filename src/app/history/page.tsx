@@ -35,7 +35,7 @@ export default function HistoryPage() {
   const [toDate, setToDate] = useState('');
   const [guestType, setGuestType] = useState<string>('all');
   const [roomFilter, setRoomFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('checked_out');
 
   const filtered = useMemo(() => {
     return bookings
@@ -93,7 +93,7 @@ export default function HistoryPage() {
   }, [filtered]);
 
   return (
-    <RequireAuth roles={['admin']}>
+    <RequireAuth roles={['admin', 'caretaker']}>
       <DashboardLayout>
         <div className="space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">

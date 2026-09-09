@@ -243,6 +243,7 @@ const bn: Dict = {
   'ci.access': 'শুধুমাত্র অ্যাডমিন বা কেয়ারটেকার চেক-ইন করতে পারেন।',
   'ci.days': 'দিন',
   'ci.checkoutOn': 'চেক-আউট:',
+  'ci.newCheckin': 'নতুন চেক-ইন',
 
   // Check-out
   'co.currentlyCheckedIn': 'বর্তমানে চেক-ইন করা অতিথিরা',
@@ -252,6 +253,7 @@ const bn: Dict = {
   'co.todayTag': 'আজ',
   'co.button': 'চেক-আউট',
   'co.title': 'চেক-আউট',
+  'co.newCheckout': 'নতুন চেক-আউট',
   'co.bookingSummary': 'বুকিং সারসংক্ষেপ',
   'co.guestDetails': 'অতিথির বিবরণ',
   'co.totalRent': 'মোট ভাড়া',
@@ -373,6 +375,7 @@ const bn: Dict = {
   'set.perDay': '/ দিন',
   'set.dataManagement': 'ডেটা ব্যবস্থাপনা',
   'set.resetDemo': 'ডেমো ডেটা রিসেট',
+  'set.records': 'রেকর্ড',
   'set.resetConfirm': 'আপনি কি নিশ্চিত? সব বুকিং ও রুম ডেটা রিসেট হয়ে ডিফল্ট ডেমো ডেটায় ফিরে যাবে।',
   'set.resetDone': 'ডেটা রিসেট করে ডেমো ডেটা লোড হয়েছে',
   'set.resetFailed': 'রিসেট ব্যর্থ হয়েছে',
@@ -622,6 +625,7 @@ const en: Dict = {
   'ci.access': 'Only admins or caretakers can perform check-in.',
   'ci.days': 'days',
   'ci.checkoutOn': 'Check-out:',
+  'ci.newCheckin': 'New Check-In',
 
   'co.currentlyCheckedIn': 'Currently Checked-In Guests',
   'co.activeGuests': 'Active Guests',
@@ -630,6 +634,7 @@ const en: Dict = {
   'co.todayTag': 'Today',
   'co.button': 'Check-Out',
   'co.title': 'Check-Out',
+  'co.newCheckout': 'New Check-Out',
   'co.bookingSummary': 'Booking Summary',
   'co.guestDetails': 'Guest Details',
   'co.totalRent': 'Total Rent',
@@ -746,6 +751,7 @@ const en: Dict = {
   'set.perDay': '/ day',
   'set.dataManagement': 'Data Management',
   'set.resetDemo': 'Reset Demo Data',
+  'set.records': 'Records',
   'set.resetConfirm': 'Are you sure? All bookings and room data will be reset to the default demo data.',
   'set.resetDone': 'Data reset to demo data',
   'set.resetFailed': 'Reset failed',

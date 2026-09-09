@@ -17,7 +17,7 @@ import { calculateTotalRent, getDailyRate } from '@/lib/rent-calculator';
 import { calculateDays, getToday } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
-export function BookingForm() {
+export function BookingForm({ mode = 'booking', onDone }: { mode?: 'booking' | 'checkin'; onDone?: () => void }) {
   const router = useRouter();
   const { currentUser } = useAuth();
   const { rooms, bookings, addBooking } = useData();
@@ -101,6 +101,7 @@ export function BookingForm() {
 
     const firstRoom = rooms.find(r => r.id === roomIds[0]);
     const now = new Date().toISOString();
+    const isCheckin = mode === 'checkin';
     const booking = {
       id: createId('bk'),
       booking_date: bookingDate,
@@ -118,7 +119,8 @@ export function BookingForm() {
       amount_paid: 0,
       due_amount: totalRent,
       payment_status: 'unpaid' as const,
-      booking_status: 'booked' as const,
+      booking_status: (isCheckin ? 'checked_in' : 'booked') as 'booked' | 'checked_in',
+      actual_check_in: isCheckin ? now : undefined,
       notes: notes.trim(),
       created_by: currentUser?.id ?? '',
       created_at: now,
@@ -126,8 +128,9 @@ export function BookingForm() {
     };
 
     addBooking(booking);
-    showToast(t('form.bookingCreated'));
-    router.push('/bookings');
+    showToast(isCheckin ? t('ci.done') : t('form.bookingCreated'));
+    if (onDone) onDone();
+    else router.push('/checkin');
   }
 
   return (
@@ -299,8 +302,8 @@ export function BookingForm() {
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" size="lg">{t('form.createBooking')}</Button>
-        <Button type="button" variant="outline" size="lg" onClick={() => router.push('/bookings')}>
+        <Button type="submit" size="lg">{mode === 'checkin' ? t('ci.complete') : t('form.createBooking')}</Button>
+        <Button type="button" variant="outline" size="lg" onClick={() => { if (onDone) onDone(); else router.push('/checkin'); }}>
           {t('common.cancel')}
         </Button>
       </div>

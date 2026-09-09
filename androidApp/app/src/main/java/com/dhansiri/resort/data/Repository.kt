@@ -86,7 +86,11 @@ class Repository(private val session: SessionStore) {
         _loading.value = false
     }
 
-    suspend fun createBooking(
+    /**
+     * Manual / walk-in check-in: creates a booking that is already checked in,
+     * mirroring the New Check-in flow on the website.
+     */
+    suspend fun directCheckin(
         guestName: String,
         organization: String,
         guestType: GuestType,
@@ -115,7 +119,9 @@ class Repository(private val session: SessionStore) {
             amountPaid = 0.0,
             dueAmount = rent,
             paymentStatus = PaymentStatus.UNPAID,
-            bookingStatus = BookingStatus.BOOKED,
+            bookingStatus = BookingStatus.CHECKED_IN,
+            actualCheckIn = nowIso,
+            actualCheckOut = null,
             notes = notes.trim(),
             createdBy = loggedInUserId,
             createdAt = nowIso,
@@ -124,14 +130,10 @@ class Repository(private val session: SessionStore) {
         return withContext(Dispatchers.IO) {
             try {
                 val inserted = api.insertBooking(apiKey, auth, body = insert)
-                if (inserted.isNotEmpty()) {
-                    _bookings.value = listOf(inserted.first()) + _bookings.value
-                } else {
-                    _bookings.value = listOf(insert.toBooking()) + _bookings.value
-                }
+                val saved = if (inserted.isNotEmpty()) inserted.first() else insert.toBooking()
+                _bookings.value = listOf(saved) + _bookings.value
                 Result.success(Unit)
             } catch (e: Exception) {
-                _bookings.value = listOf(insert.toBooking()) + _bookings.value
                 Result.failure(e)
             }
         }
