@@ -57,24 +57,33 @@ class Repository(private val session: SessionStore) {
     suspend fun refresh() {
         _loading.value = true
         _error.value = null
+        val failures = mutableListOf<String>()
         try {
-            val roomsDeferred = withContext(Dispatchers.IO) { api.getRooms(apiKey, auth) }
-            val bookingsDeferred = withContext(Dispatchers.IO) { api.getBookings(apiKey, auth) }
-            val overridesList = withContext(Dispatchers.IO) { api.getOverrides(apiKey, auth) }
-            val paymentsList = try {
-                withContext(Dispatchers.IO) { api.getPayments(apiKey, auth) }
-            } catch (e: Exception) {
-                emptyList()
-            }
-            _rooms.value = roomsDeferred
-            _bookings.value = bookingsDeferred
-            _overrides.value = overridesList.associate { it.key to it.value }
-            _payments.value = paymentsList
+            _rooms.value = withContext(Dispatchers.IO) { api.getRooms(apiKey, auth) }
         } catch (e: Exception) {
-            _error.value = e.message ?: "Network error"
-        } finally {
-            _loading.value = false
+            failures += "rooms: ${e.message}"
         }
+        try {
+            _bookings.value = withContext(Dispatchers.IO) { api.getBookings(apiKey, auth) }
+        } catch (e: Exception) {
+            failures += "bookings: ${e.message}"
+        }
+        try {
+            val overridesList = withContext(Dispatchers.IO) { api.getOverrides(apiKey, auth) }
+            _overrides.value = overridesList.associate { it.key to it.value }
+        } catch (e: Exception) {
+            // dashboard_overrides is optional (admin display tweaks) — never block the app on it.
+            failures += "overrides: ${e.message}"
+        }
+        try {
+            _payments.value = withContext(Dispatchers.IO) { api.getPayments(apiKey, auth) }
+        } catch (e: Exception) {
+            failures += "payments: ${e.message}"
+        }
+        if (failures.isNotEmpty()) {
+            _error.value = failures.joinToString("; ")
+        }
+        _loading.value = false
     }
 
     suspend fun createBooking(
