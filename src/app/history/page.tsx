@@ -53,12 +53,11 @@ export default function HistoryPage() {
 
   function exportCSV() {
     const headers = [
-      'Booking ID', 'Guest Name', 'Organization', 'Guest Type', 'Room',
+      'Guest Name', 'Organization', 'Guest Type', 'Room',
       'Check-in', 'Check-out', 'Days', 'Daily Rate', 'Total Rent',
-      'Paid', 'Due', 'Payment Status', 'Booking Status',
+      'Amount Paid', 'Due', 'Payment Status', 'Booking Status',
     ];
     const rows = filtered.map(b => [
-      b.id,
       b.guest_name,
       b.organization,
       b.guest_type,
@@ -160,7 +159,6 @@ export default function HistoryPage() {
                 <table className="w-full min-w-[1100px] text-left text-sm">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-50">
-                      <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.bookingId')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.guestName')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.room')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.guestType')}</th>
@@ -168,7 +166,7 @@ export default function HistoryPage() {
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.checkOut')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.days')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.totalRentCol')}</th>
-                      <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.paidCol')}</th>
+                      <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.amountPaid')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.dueCol')}</th>
                       <th className="px-3 py-3 text-xs font-semibold uppercase text-slate-500">{t('his.statusCol')}</th>
                     </tr>
@@ -176,12 +174,11 @@ export default function HistoryPage() {
                   <tbody>
                     {filtered.length === 0 ? (
                       <tr>
-                        <td colSpan={11} className="px-3 py-10 text-center text-slate-400">{t('his.noData')}</td>
+                        <td colSpan={10} className="px-3 py-10 text-center text-slate-400">{t('his.noData')}</td>
                       </tr>
                     ) : (
                       filtered.map(b => (
                         <tr key={b.id} className="border-b border-slate-100 hover:bg-slate-50">
-                          <td className="px-3 py-2.5 font-mono text-xs text-slate-500">{b.id}</td>
                           <td className="px-3 py-2.5">
                             <div className="font-medium text-slate-800">{b.guest_name}</div>
                             {b.organization && <div className="text-xs text-slate-400">{b.organization}</div>}

@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { LogOut, ReceiptText, AlertTriangle, CheckCircle2, Plus } from 'lucide-react';
+import { LogOut, ReceiptText, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { RequireAuth } from '@/components/layout/auth-guard';
 import { useAuth } from '@/lib/auth-provider';
@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { Badge } from '@/components/ui/badge';
-import { Input, Select, Textarea, FormLabel, FormGroup } from '@/components/ui/form';
+import { Input, Select, FormLabel, FormGroup } from '@/components/ui/form';
 import { useToast } from '@/components/ui/toast';
 import { useLang, guestTypeLabel, paymentStatusLabel, bookingStatusLabel } from '@/lib/i18n';
 import { Booking, GuestType, PaymentStatus } from '@/lib/types';
@@ -34,7 +34,6 @@ function CaretakerCheckout() {
   const [roomIds, setRoomIds] = useState<string[]>([]);
   const [checkInDate, setCheckInDate] = useState(getToday());
   const [checkOutDate, setCheckOutDate] = useState('');
-  const [notes, setNotes] = useState('');
   const [amountPaidStr, setAmountPaidStr] = useState('0');
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -113,7 +112,7 @@ function CaretakerCheckout() {
       booking_status: 'checked_out',
       actual_check_in: now,
       actual_check_out: now,
-      notes: notes.trim(),
+      notes: '',
       created_by: currentUser?.id ?? '',
       created_at: now,
       updated_at: now,
@@ -121,7 +120,6 @@ function CaretakerCheckout() {
     showToast(t('co.done'));
     setGuestName('');
     setRoomIds([]);
-    setNotes('');
     setAmountPaidStr('0');
     setErrors([]);
   }
@@ -164,10 +162,6 @@ function CaretakerCheckout() {
               <Input type="date" value={checkOutDate} onChange={e => setCheckOutDate(e.target.value)} />
             </FormGroup>
           </div>
-          <FormGroup className="mt-4">
-            <FormLabel>{t('form.notes')}</FormLabel>
-            <Textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)} placeholder={t('form.notesPlaceholder')} />
-          </FormGroup>
         </CardContent>
       </Card>
 
@@ -462,13 +456,6 @@ function AdminCheckoutList() {
                   <span className="text-emerald-700">{fmtCurrency(target.total_rent)}</span>
                 </div>
               </div>
-
-              {target.notes && (
-                <div className="mt-3 rounded-lg bg-slate-50 p-3">
-                  <div className="text-xs text-slate-400">{t('form.notes')}</div>
-                  <div className="mt-1 whitespace-pre-line text-sm text-slate-700">{target.notes}</div>
-                </div>
-              )}
             </div>
 
             <div className="space-y-3">
@@ -527,24 +514,17 @@ function AdminCheckoutList() {
 /* ---------- Router ---------- */
 
 function CheckoutPageContent() {
-  const [showManual, setShowManual] = useState(false);
   const { t } = useLang();
 
   return (
     <RequireAuth>
       <DashboardLayout>
         <div className="space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
             <h2 className="text-lg font-semibold text-slate-800">{t('co.title')}</h2>
-            <Button onClick={() => setShowManual(true)}>
-              <Plus className="h-4 w-4" />
-              {t('co.newCheckout')}
-            </Button>
           </div>
+          <CaretakerCheckout />
           <AdminCheckoutList />
-          <Modal open={showManual} onClose={() => setShowManual(false)} title={t('co.newCheckout')} size="lg">
-            <CaretakerCheckout />
-          </Modal>
         </div>
       </DashboardLayout>
     </RequireAuth>
