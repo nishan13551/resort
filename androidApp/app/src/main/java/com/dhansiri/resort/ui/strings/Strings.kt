@@ -106,10 +106,15 @@ class Tx(private val bn: Boolean) {
     val checkinSuccess = p("চেক-ইন সফল হয়েছে!", "Checked in!")
     val checkoutSuccess = p("চেক-আউট সফল হয়েছে!", "Checked out!")
     val noBookingsToCheckin = p("চেক-ইনের জন্য কোনো বুকিং নেই", "No bookings to check in")
-    val noBookingsToCheckout = p("চেক-আউটের জন্য কোনো বুকিং নেই", "No checked-in bookings")
+    val noBookingsToCheckout = p("কোনো সক্রিয় অতিথি নেই", "No active guests")
     val enterPaymentAmount = p("পরিশোধিত পরিমাণ লিখুন", "Enter amount paid")
     val checkOutGuest = p("চেক-আউট", "Check out")
     val confirm = p("নিশ্চিত করুন", "Confirm")
+    val newCheckout = p("নতুন চেক-আউট", "New Checkout")
+    val bookingDate = p("বুকিং তারিখ", "Booking Date")
+    val todayTag = p("আজ", "Today")
+    val lateTag = p("দেরি", "Late")
+    val upcomingTag = p("আসন্ন", "Upcoming")
 
     // Common
     val loading = p("লোড হচ্ছে...", "Loading...")

@@ -202,6 +202,87 @@ class Repository(private val session: SessionStore) {
         return result
     }
 
+    /**
+     * Manual / walk-out checkout: creates a booking that is already checked out,
+     * mirroring the caretaker manual checkout form on the website.
+     */
+    suspend fun directCheckout(
+        guestName: String,
+        organization: String,
+        guestType: GuestType,
+        roomIds: List<String>,
+        checkIn: String,
+        checkOut: String,
+        notes: String,
+        amountPaidInput: Double,
+    ): Result<Unit> {
+        val days = Logic.calculateDays(checkIn, checkOut)
+        val rate = Logic.dailyRate(guestType)
+        val rent = rate * days * roomIds.size
+        val paid = amountPaidInput.coerceIn(0.0, rent)
+        val due = Logic.dueAmount(rent, paid)
+        val status = when {
+            due <= 0.0 -> PaymentStatus.PAID
+            paid > 0.0 -> PaymentStatus.PARTIAL
+            else -> PaymentStatus.UNPAID
+        }
+        val nowIso = OffsetDateTime.now().toString()
+        val insert = BookingInsert(
+            id = Logic.randomId(),
+            bookingDate = Logic.todayIso(),
+            guestName = guestName.trim(),
+            organization = organization.trim(),
+            guestType = guestType,
+            roomId = roomIds.first(),
+            roomIds = roomIds,
+            checkInDate = checkIn,
+            checkOutDate = checkOut,
+            numberOfDays = days,
+            dailyRate = rate,
+            totalRent = rent,
+            amountPaid = paid,
+            dueAmount = due,
+            paymentStatus = status,
+            bookingStatus = BookingStatus.CHECKED_OUT,
+            actualCheckIn = nowIso,
+            actualCheckOut = nowIso,
+            notes = notes.trim(),
+            createdBy = loggedInUserId,
+            createdAt = nowIso,
+            updatedAt = nowIso,
+        )
+        return withContext(Dispatchers.IO) {
+            try {
+                val inserted = api.insertBooking(apiKey, auth, body = insert)
+                val saved = if (inserted.isNotEmpty()) inserted.first() else insert.toBooking()
+                _bookings.value = listOf(saved) + _bookings.value
+                if (paid > 0.0) {
+                    try {
+                        val payment = Payment(
+                            id = Logic.randomId(),
+                            bookingId = saved.id,
+                            amount = paid,
+                            paymentDate = Logic.todayIso(),
+                            paymentMethod = "cash",
+                            notes = null,
+                            recordedBy = loggedInUserId,
+                            createdAt = nowIso,
+                        )
+                        val paymentInserted = api.insertPayment(apiKey, auth, body = payment)
+                        if (paymentInserted.isNotEmpty()) {
+                            _payments.value = listOf(paymentInserted.first()) + _payments.value
+                        }
+                    } catch (e: Exception) {
+                        // non-fatal: booking is still checked out
+                    }
+                }
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
     suspend fun cancelBooking(bookingId: String): Result<Unit> {
         val body = mapOf(
             "booking_status" to BookingStatus.CANCELLED.serialName(),

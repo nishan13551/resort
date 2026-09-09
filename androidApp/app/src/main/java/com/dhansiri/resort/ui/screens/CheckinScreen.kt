@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -43,6 +45,7 @@ import com.dhansiri.resort.ui.components.EmptyState
 import com.dhansiri.resort.ui.components.LoadingShimmer
 import com.dhansiri.resort.ui.components.SectionTitle
 import com.dhansiri.resort.ui.components.StatusChip
+import com.dhansiri.resort.ui.strings.guestTypeLabel
 import com.dhansiri.resort.ui.theme.Amber
 import com.dhansiri.resort.ui.theme.Emerald
 import com.dhansiri.resort.ui.theme.EmeraldDark
@@ -86,6 +89,17 @@ fun CheckinScreen(repository: Repository, onSnack: (String) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 items(due, key = { it.id }) { booking ->
+                    val today = Logic.todayIso()
+                    val tagText = when {
+                        booking.checkInDate == today -> strings.todayTag
+                        booking.checkInDate < today -> strings.lateTag
+                        else -> strings.upcomingTag
+                    }
+                    val tagColor = when {
+                        booking.checkInDate == today -> Emerald
+                        booking.checkInDate < today -> Amber
+                        else -> SlateMuted
+                    }
                     Card(
                         shape = RoundedCornerShape(18.dp),
                         colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.White),
@@ -95,16 +109,38 @@ fun CheckinScreen(repository: Repository, onSnack: (String) -> Unit) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.MoveToInbox, contentDescription = null, tint = Amber)
                                 Spacer(Modifier.width(8.dp))
-                                Text(booking.guestName, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyLarge)
+                                Text(booking.guestName, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+                                StatusChip(tagText, tagColor)
                             }
                             Text(
-                                "${Logic.bookingRoomsLabel(booking, rooms)}  •  ${Logic.formatDate(booking.checkInDate, bn)} → ${Logic.formatDate(booking.checkOutDate, bn)}",
+                                "${Logic.bookingRoomsLabel(booking, rooms)}  •  ${guestTypeLabel(booking.guestType, bn)}" +
+                                    (if (booking.organization.isNotBlank()) "  •  ${booking.organization}" else ""),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = SlateMuted,
                             )
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                StatusChip(strings.checkin, Emerald)
-                                Text("${strings.totalRent}: ${Logic.formatCurrency(booking.totalRent, bn)}", style = MaterialTheme.typography.labelMedium, color = EmeraldDark)
+                            Text(
+                                "${Logic.formatDate(booking.checkInDate, bn)} → ${Logic.formatDate(booking.checkOutDate, bn)}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = SlateMuted,
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(
+                                    "${strings.totalRent}: ${Logic.formatCurrency(booking.totalRent, bn)}",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = EmeraldDark,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Button(
+                                    onClick = { pending = booking },
+                                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Emerald),
+                                ) {
+                                    Text(strings.checkin)
+                                }
                             }
                         }
                     }
@@ -115,13 +151,46 @@ fun CheckinScreen(repository: Repository, onSnack: (String) -> Unit) {
 
     val target = pending
     if (target != null) {
+        val bnDialog = LocalLang.current == com.dhansiri.resort.ui.strings.Lang.BN
         AlertDialog(
             onDismissRequest = { if (!busy) pending = null },
             title = { Text(strings.confirmCheckin) },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(target.guestName, fontWeight = FontWeight.SemiBold)
-                    Text(Logic.bookingRoomsLabel(target, rooms), style = MaterialTheme.typography.bodySmall, color = SlateMuted)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(target.guestName, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        "${Logic.bookingRoomsLabel(target, rooms)}  •  ${guestTypeLabel(target.guestType, bnDialog)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = SlateMuted,
+                    )
+                    if (target.organization.isNotBlank()) {
+                        Text(target.organization, style = MaterialTheme.typography.bodySmall, color = SlateMuted)
+                    }
+                    Row(Modifier.fillMaxWidth()) {
+                        Column(Modifier.weight(1f)) {
+                            Text(strings.checkInDate, style = MaterialTheme.typography.labelSmall, color = SlateMuted)
+                            Text(Logic.formatDate(target.checkInDate, bnDialog), style = MaterialTheme.typography.bodyMedium)
+                        }
+                        Column(Modifier.weight(1f)) {
+                            Text(strings.checkOutDate, style = MaterialTheme.typography.labelSmall, color = SlateMuted)
+                            Text(Logic.formatDate(target.checkOutDate, bnDialog), style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                    Row(Modifier.fillMaxWidth()) {
+                        Column(Modifier.weight(1f)) {
+                            Text(strings.numberOfDays, style = MaterialTheme.typography.labelSmall, color = SlateMuted)
+                            Text("${target.numberOfDays}", style = MaterialTheme.typography.bodyMedium)
+                        }
+                        Column(Modifier.weight(1f)) {
+                            Text(strings.totalRent, style = MaterialTheme.typography.labelSmall, color = SlateMuted)
+                            Text(
+                                Logic.formatCurrency(target.totalRent, bnDialog),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = EmeraldDark,
+                            )
+                        }
+                    }
                 }
             },
             confirmButton = {
