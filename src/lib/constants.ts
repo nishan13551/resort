@@ -131,7 +131,7 @@ export const BENGALI = {
   addUser: 'ব্যবহারকারী যোগ করুন',
   editUser: 'ব্যবহারকারী সম্পাদনা',
   fullName: 'পুরো নাম',
-  email: 'ইমেইল',
+  username: 'ইউজারনেম',
   password: 'পাসওয়ার্ড',
   role: 'ভূমিকা',
   active: 'সক্রিয়',

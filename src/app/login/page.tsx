@@ -12,7 +12,7 @@ export default function LoginPage() {
   const { currentUser, authReady, login } = useAuth();
   const { t, lang, toggleLang } = useLang();
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -28,7 +28,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const result = login(email, password);
+    const result = login(username, password);
     setLoading(false);
     if (result.success) {
       router.push(result.role === 'caretaker' ? '/checkout' : '/dashboard');
@@ -69,16 +69,16 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <FormGroup>
-              <FormLabel htmlFor="email">{t('user.email')}</FormLabel>
+              <FormLabel htmlFor="username">{t('user.username')}</FormLabel>
               <Input
-                id="email"
-                name="email"
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder={t('login.emailPlaceholder')}
+                id="username"
+                name="username"
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder={t('login.usernamePlaceholder')}
                 required
-                autoComplete="email"
+                autoComplete="username"
               />
             </FormGroup>
 

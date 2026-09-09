@@ -85,7 +85,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
               <div className="absolute right-0 top-12 z-40 w-56 overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-xl animate-pop-in">
                 <div className="border-b border-emerald-50 bg-emerald-50/60 px-4 py-3">
                   <div className="text-sm font-semibold text-slate-800">{currentUser?.full_name}</div>
-                  <div className="text-xs text-slate-500">{currentUser?.email}</div>
+                  <div className="text-xs text-slate-500">{currentUser?.username}</div>
                   <div className="mt-1 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
                     {currentUser ? roleLabel(currentUser.role, lang) : ''}
                   </div>

@@ -8,7 +8,7 @@ interface AuthContextValue {
   currentUser: User | null;
   users: User[];
   authReady: boolean;
-  login: (email: string, password: string) => { success: boolean; role?: UserRole; error?: 'invalid' | 'disabled' | 'failed' };
+  login: (username: string, password: string) => { success: boolean; role?: UserRole; error?: 'invalid' | 'disabled' | 'failed' };
   logout: () => void;
   addUser: (user: Omit<User, 'id' | 'created_at' | 'updated_at'>, password?: string) => void;
   updateUser: (id: string, updates: Partial<User> & { password?: string }) => void;
@@ -19,13 +19,13 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const USERS_KEY = 'dhansiri_users';
+const USERS_KEY = 'dhansiri_users_v2';
 const SESSION_KEY = 'dhansiri_session';
 
 // Password store (demo only - will be replaced by Supabase Auth)
 const DEMO_PASSWORDS: Record<string, string> = {
-  'admin@dhansiri.com': 'admin098',
-  'caretaker@dhansiri.com': 'caretaker123',
+  admin: 'admin098',
+  caretaker: 'caretaker123',
 };
 
 function loadUsers(): User[] {
@@ -69,15 +69,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const currentUser = users.find(u => u.id === currentUserId && u.is_active) ?? null;
 
-  function login(email: string, password: string): { success: boolean; role?: UserRole; error?: 'invalid' | 'disabled' | 'failed' } {
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  function login(username: string, password: string): { success: boolean; role?: UserRole; error?: 'invalid' | 'disabled' | 'failed' } {
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
     if (!user) {
       return { success: false, error: 'invalid' };
     }
     if (!user.is_active) {
       return { success: false, error: 'disabled' };
     }
-    const expected = DEMO_PASSWORDS[user.email.toLowerCase()] ?? 'demo-pass-12345';
+    const expected = DEMO_PASSWORDS[user.username.toLowerCase()] ?? 'demo-pass-12345';
     if (password !== expected) {
       return { success: false, error: 'invalid' };
     }
@@ -104,12 +104,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updated_at: now,
     };
     setUsers(prev => [...prev, newUser]);
-    DEMO_PASSWORDS[newUser.email.toLowerCase()] = password?.trim() || 'user123';
+    DEMO_PASSWORDS[newUser.username.toLowerCase()] = password?.trim() || 'user123';
   }
 
   function updateUser(id: string, updates: Partial<User> & { password?: string }) {
     if (updates.password) {
-      DEMO_PASSWORDS[updates.email?.toLowerCase() ?? ''] = updates.password;
+      DEMO_PASSWORDS[updates.username?.toLowerCase() ?? ''] = updates.password;
     }
     setUsers(prev => prev.map(u => (u.id === id ? { ...u, ...updates, updated_at: new Date().toISOString() } : u)));
   }

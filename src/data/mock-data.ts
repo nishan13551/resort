@@ -62,7 +62,7 @@ function makeBooking(
 export const seedUsers: User[] = [
   {
     id: 'u_admin',
-    email: 'admin@dhansiri.com',
+    username: 'admin',
     full_name: 'রাসেল (অ্যাডমিন)',
     role: 'admin',
     is_active: true,
@@ -71,7 +71,7 @@ export const seedUsers: User[] = [
   },
   {
     id: 'u_caretaker',
-    email: 'caretaker@dhansiri.com',
+    username: 'caretaker',
     full_name: 'কেয়ারটেকার',
     role: 'caretaker',
     is_active: true,

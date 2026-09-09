@@ -103,7 +103,7 @@ export function useDashboardOverrides(): DashboardOverridesValue {
             {
               key,
               value,
-              updated_by: currentUser?.email ?? currentUser?.full_name ?? 'admin',
+              updated_by: currentUser?.username ?? currentUser?.full_name ?? 'admin',
               updated_at: new Date().toISOString(),
             },
             { onConflict: 'key' }

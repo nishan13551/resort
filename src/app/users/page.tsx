@@ -36,7 +36,7 @@ export default function UsersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [role, setRole] = useState<UserRole>('caretaker');
   const [password, setPassword] = useState('');
 
@@ -59,7 +59,7 @@ export default function UsersPage() {
   function openAdd() {
     setEditingId(null);
     setFullName('');
-    setEmail('');
+    setUsername('');
     setRole('caretaker');
     setPassword('');
     setModalOpen(true);
@@ -70,22 +70,22 @@ export default function UsersPage() {
     if (!user) return;
     setEditingId(id);
     setFullName(user.full_name);
-    setEmail(user.email);
+    setUsername(user.username);
     setRole(user.role);
     setPassword('');
     setModalOpen(true);
   }
 
   function handleSave() {
-    if (!fullName.trim() || !email.trim()) {
+    if (!fullName.trim() || !username.trim()) {
       showToast(t('user.nameRequired'), 'error');
       return;
     }
     if (editingId) {
-      updateUser(editingId, { full_name: fullName.trim(), email: email.trim(), role, password: password || undefined });
+      updateUser(editingId, { full_name: fullName.trim(), username: username.trim(), role, password: password || undefined });
       showToast(t('user.updated'));
     } else {
-      addUser({ full_name: fullName.trim(), email: email.trim(), role, is_active: true }, password);
+      addUser({ full_name: fullName.trim(), username: username.trim(), role, is_active: true }, password);
       showToast(t('user.added'));
     }
     setModalOpen(false);
@@ -127,7 +127,7 @@ export default function UsersPage() {
                         </div>
                         <div>
                           <div className="font-semibold text-slate-800">{user.full_name}</div>
-                          <div className="text-xs text-slate-500">{user.email}</div>
+                          <div className="text-xs text-slate-500">{user.username}</div>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-1.5">
@@ -174,8 +174,8 @@ export default function UsersPage() {
               <Input value={fullName} onChange={e => setFullName(e.target.value)} placeholder={t('user.fullName')} />
             </FormGroup>
             <FormGroup>
-              <FormLabel>{t('user.email')} *</FormLabel>
-              <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="user@email.com" />
+              <FormLabel>{t('user.username')} *</FormLabel>
+              <Input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder={t('login.usernamePlaceholder')} />
             </FormGroup>
             <FormGroup>
               <FormLabel>{t('user.role')}</FormLabel>
