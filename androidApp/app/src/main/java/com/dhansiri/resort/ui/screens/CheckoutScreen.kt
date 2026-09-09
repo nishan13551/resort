@@ -198,7 +198,7 @@ fun CheckoutScreen(
 
         FloatingActionButton(
             onClick = { showManual = true },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = 20.dp, bottom = 100.dp),
             containerColor = Emerald,
             contentColor = Color.White,
         ) {
