@@ -30,7 +30,6 @@ function CaretakerCheckout() {
 
   const [bookingDate, setBookingDate] = useState(getToday());
   const [guestName, setGuestName] = useState('');
-  const [organization, setOrganization] = useState('');
   const [guestType, setGuestType] = useState<GuestType>('bwdb');
   const [roomIds, setRoomIds] = useState<string[]>([]);
   const [checkInDate, setCheckInDate] = useState(getToday());
@@ -98,7 +97,7 @@ function CaretakerCheckout() {
       id: createId('bk'),
       booking_date: bookingDate,
       guest_name: guestName.trim(),
-      organization: organization.trim(),
+      organization: '',
       guest_type: guestType,
       room_id: roomIds[0],
       room_ids: roomIds,
@@ -121,7 +120,6 @@ function CaretakerCheckout() {
     });
     showToast(t('co.done'));
     setGuestName('');
-    setOrganization('');
     setRoomIds([]);
     setNotes('');
     setAmountPaidStr('0');
@@ -148,13 +146,9 @@ function CaretakerCheckout() {
               <Input value={guestName} onChange={e => setGuestName(e.target.value)} placeholder={t('form.guestName')} />
             </FormGroup>
             <FormGroup>
-              <FormLabel>{t('form.org')}</FormLabel>
-              <Input value={organization} onChange={e => setOrganization(e.target.value)} placeholder={t('form.orgPlaceholder')} />
-            </FormGroup>
-            <FormGroup>
               <FormLabel>{t('form.guestType')} *</FormLabel>
               <Select value={guestType} onChange={e => setGuestType(e.target.value as GuestType)}>
-                {(Object.keys(GUEST_TYPE_RATES) as GuestType[]).filter(t => t !== 'private').map(type => (
+                {(Object.keys(GUEST_TYPE_RATES) as GuestType[]).filter(t => t === 'bwdb' || t === 'govt_other' || t === 'private').map(type => (
                   <option key={type} value={type}>
                     {guestTypeLabel(type, lang)} ({fmtCurrency(GUEST_TYPE_RATES[type])}{t('set.perDay')})
                   </option>

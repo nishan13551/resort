@@ -1,9 +1,9 @@
 import { GuestType, UserRole, PaymentStatus, BookingStatus } from './types';
 
 export const GUEST_TYPE_LABELS: Record<GuestType, string> = {
-  bwdb: 'বিডব্লিউডিবি',
-  govt_other: 'অন্যান্য সরকারি অফিস',
-  private: 'এনজিও / সাধারণ',
+  bwdb: 'বিডব্লিউডিবি অফিসার',
+  govt_other: 'অন্যান্য সরকারি অফিসার',
+  private: 'এনজিও/সাধারণ অফিসার',
   ngo: 'এনজিও',
   general: 'সাধারণ',
 };

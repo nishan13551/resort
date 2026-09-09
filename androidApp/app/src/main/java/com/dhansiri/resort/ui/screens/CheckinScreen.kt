@@ -273,7 +273,6 @@ private fun ManualCheckinDialog(
     val rooms by repository.rooms.collectAsState()
 
     var guestName by remember { mutableStateOf("") }
-    var organization by remember { mutableStateOf("") }
     var guestType by remember { mutableStateOf(GuestType.BWDB) }
     var checkIn by remember { mutableStateOf(Logic.todayIso()) }
     var checkOut by remember { mutableStateOf(Logic.addDaysIso(Logic.todayIso(), 1)) }
@@ -306,16 +305,9 @@ private fun ManualCheckinDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
-                    value = organization,
-                    onValueChange = { organization = it },
-                    label = { Text(strings.organization) },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                )
                 Text(strings.guestType, style = MaterialTheme.typography.labelLarge)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    GuestType.entries.filter { it != GuestType.PRIVATE }.forEach { type ->
+                    listOf(GuestType.BWDB, GuestType.GOVT_OTHER, GuestType.PRIVATE).forEach { type ->
                         FilterChip(
                             selected = guestType == type,
                             onClick = { guestType = type },
@@ -407,7 +399,7 @@ private fun ManualCheckinDialog(
                             scope.launch {
                                 val result = repository.directCheckin(
                                     guestName = guestName,
-                                    organization = organization,
+                                    organization = "",
                                     guestType = guestType,
                                     roomIds = selectedRooms.toList(),
                                     checkIn = checkIn,

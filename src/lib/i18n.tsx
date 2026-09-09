@@ -81,10 +81,10 @@ const bn: Dict = {
   'common.inactive': 'নিষ্ক্রিয়',
 
   // Guest types
-  'guestType.bwdb': 'বিডব্লিউডিবি',
-  'guestType.govtOther': 'অন্যান্য সরকারি অফিস',
-  'guestType.govt_other': 'অন্যান্য সরকারি অফিস',
-  'guestType.private': 'এনজিও / সাধারণ',
+  'guestType.bwdb': 'বিডব্লিউডিবি অফিসার',
+  'guestType.govtOther': 'অন্যান্য সরকারি অফিসার',
+  'guestType.govt_other': 'অন্যান্য সরকারি অফিসার',
+  'guestType.private': 'এনজিও/সাধারণ অফিসার',
   'guestType.ngo': 'এনজিও',
   'guestType.general': 'সাধারণ',
 
@@ -473,10 +473,10 @@ const en: Dict = {
   'common.active': 'Active',
   'common.inactive': 'Inactive',
 
-  'guestType.bwdb': 'BWDB',
-  'guestType.govtOther': 'Other Govt. Office',
-  'guestType.govt_other': 'Other Govt. Office',
-  'guestType.private': 'NGO / General',
+  'guestType.bwdb': 'BWDB Officers',
+  'guestType.govtOther': 'Other Govt. Officers',
+  'guestType.govt_other': 'Other Govt. Officers',
+  'guestType.private': 'NGO/General Officers',
   'guestType.ngo': 'NGO',
   'guestType.general': 'General',
 

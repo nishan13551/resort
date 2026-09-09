@@ -143,9 +143,9 @@ class Tx(private val bn: Boolean) {
 }
 
 fun guestTypeLabel(type: GuestType, bn: Boolean): String = when (type) {
-    GuestType.BWDB -> if (bn) "বিডব্লিউডিবি" else "BWDB"
-    GuestType.GOVT_OTHER -> if (bn) "অন্যান্য সরকারি অফিস" else "Other Govt. Office"
-    GuestType.PRIVATE -> if (bn) "এনজিও / সাধারণ" else "NGO / General"
+    GuestType.BWDB -> if (bn) "বিডব্লিউডিবি অফিসার" else "BWDB Officers"
+    GuestType.GOVT_OTHER -> if (bn) "অন্যান্য সরকারি অফিসার" else "Other Govt. Officers"
+    GuestType.PRIVATE -> if (bn) "এনজিও/সাধারণ অফিসার" else "NGO/General Officers"
     GuestType.NGO -> if (bn) "এনজিও" else "NGO"
     GuestType.GENERAL -> if (bn) "সাধারণ" else "General"
 }

@@ -342,7 +342,6 @@ private fun ManualCheckoutDialog(
     val rooms by repository.rooms.collectAsState()
 
     var guestName by remember { mutableStateOf("") }
-    var organization by remember { mutableStateOf("") }
     var guestType by remember { mutableStateOf(GuestType.BWDB) }
     var checkIn by remember { mutableStateOf(Logic.todayIso()) }
     var checkOut by remember { mutableStateOf(Logic.addDaysIso(Logic.todayIso(), 1)) }
@@ -383,16 +382,9 @@ private fun ManualCheckoutDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
-                OutlinedTextField(
-                    value = organization,
-                    onValueChange = { organization = it },
-                    label = { Text(strings.organization) },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                )
                 Text(strings.guestType, style = MaterialTheme.typography.labelLarge)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    GuestType.entries.filter { it != GuestType.PRIVATE }.forEach { type ->
+                    listOf(GuestType.BWDB, GuestType.GOVT_OTHER, GuestType.PRIVATE).forEach { type ->
                         FilterChip(
                             selected = guestType == type,
                             onClick = { guestType = type },
@@ -471,7 +463,7 @@ private fun ManualCheckoutDialog(
                             scope.launch {
                                 val result = repository.directCheckout(
                                     guestName = guestName,
-                                    organization = organization,
+                                    organization = "",
                                     guestType = guestType,
                                     roomIds = selectedRooms.toList(),
                                     checkIn = checkIn,
