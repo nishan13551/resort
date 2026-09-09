@@ -83,7 +83,10 @@ const bn: Dict = {
   // Guest types
   'guestType.bwdb': 'বিডব্লিউডিবি',
   'guestType.govtOther': 'অন্যান্য সরকারি অফিস',
+  'guestType.govt_other': 'অন্যান্য সরকারি অফিস',
   'guestType.private': 'এনজিও / সাধারণ',
+  'guestType.ngo': 'এনজিও',
+  'guestType.general': 'সাধারণ',
 
   // Labels
   guestNameLabel: 'অতিথির নাম',
@@ -472,7 +475,10 @@ const en: Dict = {
 
   'guestType.bwdb': 'BWDB',
   'guestType.govtOther': 'Other Govt. Office',
+  'guestType.govt_other': 'Other Govt. Office',
   'guestType.private': 'NGO / General',
+  'guestType.ngo': 'NGO',
+  'guestType.general': 'General',
 
   guestNameLabel: 'Guest Name',
   guestTypeLabel: 'Guest Type',

@@ -7,6 +7,8 @@ enum class GuestType {
     @SerialName("bwdb") BWDB,
     @SerialName("govt_other") GOVT_OTHER,
     @SerialName("private") PRIVATE,
+    @SerialName("ngo") NGO,
+    @SerialName("general") GENERAL,
 }
 
 enum class PaymentStatus {

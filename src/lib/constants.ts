@@ -4,12 +4,16 @@ export const GUEST_TYPE_LABELS: Record<GuestType, string> = {
   bwdb: 'বিডব্লিউডিবি',
   govt_other: 'অন্যান্য সরকারি অফিস',
   private: 'এনজিও / সাধারণ',
+  ngo: 'এনজিও',
+  general: 'সাধারণ',
 };
 
 export const GUEST_TYPE_RATES: Record<GuestType, number> = {
   bwdb: 70,
   govt_other: 280,
   private: 600,
+  ngo: 600,
+  general: 600,
 };
 
 export const ROLE_LABELS: Record<UserRole, string> = {

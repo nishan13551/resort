@@ -42,6 +42,8 @@ object Logic {
         GuestType.BWDB to 70.0,
         GuestType.GOVT_OTHER to 280.0,
         GuestType.PRIVATE to 600.0,
+        GuestType.NGO to 600.0,
+        GuestType.GENERAL to 600.0,
     )
 
     fun dailyRate(guestType: GuestType): Double = guestTypeRates[guestType] ?: 0.0

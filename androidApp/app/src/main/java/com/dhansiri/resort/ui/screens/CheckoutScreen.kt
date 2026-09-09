@@ -392,7 +392,7 @@ private fun ManualCheckoutDialog(
                 )
                 Text(strings.guestType, style = MaterialTheme.typography.labelLarge)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    GuestType.entries.forEach { type ->
+                    GuestType.entries.filter { it != GuestType.PRIVATE }.forEach { type ->
                         FilterChip(
                             selected = guestType == type,
                             onClick = { guestType = type },

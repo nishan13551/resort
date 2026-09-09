@@ -73,7 +73,7 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {(['bwdb', 'govt_other', 'private'] as const).map(type => (
+                  {(['bwdb', 'govt_other', 'ngo', 'general', 'private'] as const).map(type => (
                     <div key={type} className="flex items-center justify-between rounded-lg border border-slate-100 px-4 py-3">
                       <div>
                         <div className="text-sm font-medium text-slate-800">{guestTypeLabel(type, lang)}</div>

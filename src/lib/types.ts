@@ -1,5 +1,5 @@
 export type UserRole = 'admin' | 'caretaker' | 'viewer';
-export type GuestType = 'bwdb' | 'govt_other' | 'private';
+export type GuestType = 'bwdb' | 'govt_other' | 'private' | 'ngo' | 'general';
 export type BookingStatus = 'booked' | 'checked_in' | 'checked_out' | 'cancelled';
 export type PaymentStatus = 'paid' | 'partial' | 'unpaid';
 

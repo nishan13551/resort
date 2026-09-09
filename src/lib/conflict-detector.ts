@@ -1,11 +1,11 @@
-import { Booking } from './types';
+import { Booking, GuestType } from './types';
 import { datesOverlap, getToday } from './utils';
 
 export interface BookingInput {
   booking_date: string;
   guest_name: string;
   organization: string;
-  guest_type: 'bwdb' | 'govt_other' | 'private';
+  guest_type: GuestType;
   room_id: string;
   room_ids?: string[];
   check_in_date: string;

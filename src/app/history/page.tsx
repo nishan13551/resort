@@ -123,7 +123,7 @@ export default function HistoryPage() {
                 <Input type="date" value={toDate} onChange={e => setToDate(e.target.value)} title={t('his.toDate')} />
                 <Select value={guestType} onChange={e => setGuestType(e.target.value)}>
                   <option value="all">{t('his.guestTypeFilter')}</option>
-                  {(['bwdb', 'govt_other', 'private'] as GuestType[]).map(type => (
+                  {(['bwdb', 'govt_other', 'ngo', 'general', 'private'] as GuestType[]).map(type => (
                     <option key={type} value={type}>{guestTypeLabel(type, lang)}</option>
                   ))}
                 </Select>

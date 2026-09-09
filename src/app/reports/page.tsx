@@ -63,7 +63,7 @@ export default function ReportsPage() {
   const revenueByType = useMemo(() => {
     const bwdb = filtered.filter(b => b.guest_type === 'bwdb').reduce((s, b) => s + b.total_rent, 0);
     const govt = filtered.filter(b => b.guest_type === 'govt_other').reduce((s, b) => s + b.total_rent, 0);
-    const priv = filtered.filter(b => b.guest_type === 'private').reduce((s, b) => s + b.total_rent, 0);
+    const priv = filtered.filter(b => b.guest_type === 'private' || b.guest_type === 'ngo' || b.guest_type === 'general').reduce((s, b) => s + b.total_rent, 0);
     return { bwdb, govt, priv };
   }, [filtered]);
 

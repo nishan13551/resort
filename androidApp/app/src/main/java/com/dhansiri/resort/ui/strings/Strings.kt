@@ -146,12 +146,16 @@ fun guestTypeLabel(type: GuestType, bn: Boolean): String = when (type) {
     GuestType.BWDB -> if (bn) "বিডব্লিউডিবি" else "BWDB"
     GuestType.GOVT_OTHER -> if (bn) "অন্যান্য সরকারি অফিস" else "Other Govt. Office"
     GuestType.PRIVATE -> if (bn) "এনজিও / সাধারণ" else "NGO / General"
+    GuestType.NGO -> if (bn) "এনজিও" else "NGO"
+    GuestType.GENERAL -> if (bn) "সাধারণ" else "General"
 }
 
 fun guestTypeName(type: GuestType): String = when (type) {
     GuestType.BWDB -> "bwdb"
     GuestType.GOVT_OTHER -> "govt_other"
     GuestType.PRIVATE -> "private"
+    GuestType.NGO -> "ngo"
+    GuestType.GENERAL -> "general"
 }
 
 fun bookingStatusLabel(status: BookingStatus, bn: Boolean): String = when (status) {

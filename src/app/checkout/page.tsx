@@ -154,7 +154,7 @@ function CaretakerCheckout() {
             <FormGroup>
               <FormLabel>{t('form.guestType')} *</FormLabel>
               <Select value={guestType} onChange={e => setGuestType(e.target.value as GuestType)}>
-                {(Object.keys(GUEST_TYPE_RATES) as GuestType[]).map(type => (
+                {(Object.keys(GUEST_TYPE_RATES) as GuestType[]).filter(t => t !== 'private').map(type => (
                   <option key={type} value={type}>
                     {guestTypeLabel(type, lang)} ({fmtCurrency(GUEST_TYPE_RATES[type])}{t('set.perDay')})
                   </option>
