@@ -161,13 +161,6 @@ fun LoginScreen(onLogin: (User) -> Unit) {
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 loading = loading,
             )
-            Spacer(Modifier.height(16.dp))
-            Text(
-                text = strings.demoHint,
-                style = MaterialTheme.typography.labelSmall,
-                color = SlateMuted,
-                textAlign = TextAlign.Center,
-            )
             Spacer(Modifier.height(24.dp))
         }
     }

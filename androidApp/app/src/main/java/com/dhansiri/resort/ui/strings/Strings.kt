@@ -37,7 +37,6 @@ class Tx(private val bn: Boolean) {
     val loggingIn = p("প্রবেশ হচ্ছে...", "Signing in...")
     val invalidCredentials = p("ভুল ইমেইল বা পাসওয়ার্ড", "Invalid email or password")
     val accountDisabled = p("অ্যাকাউন্ট নিষ্ক্রিয়", "This account is disabled")
-    val demoHint = p("ডেমো: admin@dhansiri.com / admin098", "Demo: admin@dhansiri.com / admin098")
 
     // Dashboard
     val todayBookings = p("আজকের বুকিং", "Today's Bookings")

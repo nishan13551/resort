@@ -76,11 +76,13 @@ fun HomeNavigation(
     val tabs = buildList {
         if (isAdmin) {
             add(Tab(Routes.DASHBOARD, strings.dashboard, Icons.Filled.Dashboard, Icons.Outlined.Dashboard))
+            add(Tab(Routes.BOOKINGS, strings.bookings, Icons.Filled.EventNote, Icons.Outlined.EventNote))
+            add(Tab(Routes.CHECKIN, strings.checkin, Icons.Filled.MoveToInbox, Icons.Outlined.FlightTakeoff))
         }
-        add(Tab(Routes.BOOKINGS, strings.bookings, Icons.Filled.EventNote, Icons.Outlined.EventNote))
-        add(Tab(Routes.CHECKIN, strings.checkin, Icons.Filled.MoveToInbox, Icons.Outlined.FlightTakeoff))
         add(Tab(Routes.CHECKOUT, strings.checkout, Icons.Filled.MoveToInbox, Icons.Outlined.CalendarMonth))
-        add(Tab(Routes.MORE, strings.more, Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz))
+        if (isAdmin) {
+            add(Tab(Routes.MORE, strings.more, Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz))
+        }
     }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -90,7 +92,7 @@ fun HomeNavigation(
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = if (isAdmin) Routes.DASHBOARD else Routes.BOOKINGS,
+            startDestination = if (isAdmin) Routes.DASHBOARD else Routes.CHECKOUT,
             modifier = Modifier.fillMaxSize(),
             enterTransition = {
                 slideInHorizontally(tween(280)) { it / 8 } + fadeIn(tween(280))
@@ -122,7 +124,12 @@ fun HomeNavigation(
                 com.dhansiri.resort.ui.screens.CheckinScreen(repository = repository, onSnack = onSnack)
             }
             composable(Routes.CHECKOUT) {
-                com.dhansiri.resort.ui.screens.CheckoutScreen(repository = repository, onSnack = onSnack)
+                com.dhansiri.resort.ui.screens.CheckoutScreen(
+                    repository = repository,
+                    isAdmin = isAdmin,
+                    onLogout = onLogout,
+                    onSnack = onSnack,
+                )
             }
             composable(Routes.ROOMS) {
                 com.dhansiri.resort.ui.screens.RoomsScreen(repository = repository)

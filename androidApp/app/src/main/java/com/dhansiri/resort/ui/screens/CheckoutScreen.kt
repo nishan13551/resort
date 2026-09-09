@@ -19,6 +19,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -53,7 +54,12 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.text.KeyboardOptions
 
 @Composable
-fun CheckoutScreen(repository: Repository, onSnack: (String) -> Unit) {
+fun CheckoutScreen(
+    repository: Repository,
+    onSnack: (String) -> Unit,
+    isAdmin: Boolean = true,
+    onLogout: () -> Unit = {},
+) {
     val strings = LocalStrings.current
     val lang = LocalLang.current
     val bn = lang == com.dhansiri.resort.ui.strings.Lang.BN
@@ -73,10 +79,17 @@ fun CheckoutScreen(repository: Repository, onSnack: (String) -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        SectionTitle(
-            strings.checkout,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp, top = 12.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SectionTitle(strings.checkout, modifier = Modifier.weight(1f))
+            if (!isAdmin) {
+                IconButton(onClick = onLogout) {
+                    Icon(Icons.Default.Logout, contentDescription = strings.logout, tint = SlateMuted)
+                }
+            }
+        }
         if (loading && bookings.isEmpty()) {
             LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(4) { LoadingShimmer() }
